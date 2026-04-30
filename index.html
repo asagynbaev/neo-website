@@ -1406,7 +1406,11 @@ const App = () => {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  const t = React.useCallback((k) => (STRINGS[lang] && STRINGS[lang][k]) || STRINGS.en[k] || k, [lang]);
+  const t = React.useCallback((k) => {
+    if (STRINGS[lang] && k in STRINGS[lang]) return STRINGS[lang][k];
+    if (k in STRINGS.en) return STRINGS.en[k];
+    return k;
+  }, [lang]);
 
   return (
     <I18nContext.Provider value={{ t, lang, setLang: (l) => { setLang(l); setTweak("lang", l); } }}>
