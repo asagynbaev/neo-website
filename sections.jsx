@@ -459,9 +459,11 @@ const Contact = () => {
         })
       });
       const data = await res.json().catch(() => ({}));
+      console.log("[contact] web3forms response:", res.status, data);
       if (!res.ok || !data.success) throw new Error(data.message || "send failed");
       setSent(true);
     } catch (err) {
+      console.error("[contact] submit error:", err);
       setErrors({ submit: t("err_send") || "Could not send. Please try again." });
     } finally {
       setSending(false);
