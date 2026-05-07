@@ -445,20 +445,21 @@ const Contact = () => {
 
     setSending(true);
     try {
-      const res = await fetch("https://formsubmit.co/ajax/ddogoev@gmail.com", {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
+          access_key: "c014c0eb-33b3-4781-86a7-f3f666ae8bce",
+          subject: `New enquiry from ${form.name} — NEO Living`,
+          from_name: "NEO Living website",
           name: form.name,
-          organization: form.org,
-          role: form.role,
-          message: form.message,
-          _subject: `New enquiry from ${form.name} — NEO Living`,
-          _template: "table",
-          _captcha: "false"
+          organization: form.org || "—",
+          role: form.role || "—",
+          message: form.message
         })
       });
-      if (!res.ok) throw new Error("send failed");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) throw new Error(data.message || "send failed");
       setSent(true);
     } catch (err) {
       setErrors({ submit: t("err_send") || "Could not send. Please try again." });
