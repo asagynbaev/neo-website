@@ -1,0 +1,1466 @@
+// tweaks-panel.jsx
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+  .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+  .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+`;
+
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+  }, []);
+  return [values, setTweak];
+}
+
+function TweaksPanel({ title = 'Tweaks', children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel"
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">{children}</div>
+      </div>
+    </>
+  );
+}
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+function TweakColor({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <input type="color" className="twk-swatch" value={value}
+             onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+
+// logo.jsx
+const NLLogo = ({ light = false, compact = false, size = 44 }) => {
+  const src = light ? "logo-light.png?v=2" : "logo-dark.png?v=2";
+  const height = compact ? Math.round(size * 0.7) : size;
+  return (
+    <img
+      src={src}
+      alt="NEO Living Developments"
+      style={{
+        height,
+        width: "auto",
+        display: "block",
+        userSelect: "none",
+      }}
+      draggable={false}
+    />
+  );
+};
+
+const NLMark = ({ size = 32, color }) => (
+  <img
+    src={(color === "#ffffff" || color === "white") ? "logo-light.png" : "logo-dark.png"}
+    alt=""
+    aria-hidden="true"
+    style={{
+      height: size,
+      width: "auto",
+      display: "block",
+      objectFit: "cover",
+      objectPosition: "left center",
+      maxWidth: size * 1.1,
+    }}
+    draggable={false}
+  />
+);
+
+window.NLMark = NLMark;
+window.NLLogo = NLLogo;
+
+// i18n.jsx
+const STRINGS = {
+  en: {
+    nav_about: "About",
+    nav_expertise: "Expertise",
+    nav_partnership: "Partnership",
+    nav_portfolio: "Portfolio",
+    nav_markets: "Markets",
+    nav_sustainability: "Sustainability",
+    nav_contact: "Contact",
+    nav_cta: "Partner with us",
+    hero_meta_l_top: "EST. CENTRAL ASIA",
+    hero_meta_l_bot: "Premium real estate developer",
+    hero_meta_r_top: "N 42°52′ / E 74°36′",
+    hero_meta_r_bot: "Kyrgyz Republic · Region · 2026",
+    hero_h1_a: "Land into",
+    hero_h1_b: "landmarks.",
+    hero_h1_sub: "Premium development across Central Asia and beyond.",
+    hero_lead: "NEO Living Developments transforms land into high-quality residential and commercial assets — combining 25+ years of experience, modern construction methods, and structured partnership models.",
+    hero_cta_primary: "Partner with us",
+    hero_cta_secondary: "Our portfolio",
+    stats_years: "Combined team experience",
+    stats_area: "Delivered residential & commercial",
+    stats_projects: "Projects in portfolio",
+    stats_units: "Units in delivery",
+    stats_projects_sub: "12 delivered · 13 in pipeline",
+    about_eyebrow: "01 — About",
+    about_h: "A premium development platform.",
+    about_p1_pre: "NEO Living Developments",
+    about_p1_post: " is a premium real estate development company specialising in residential and commercial projects across Kyrgyzstan and the wider region.",
+    about_p2: "We bring together more than 25 years of combined experience and over 2,000,000 m² of delivered residential and commercial space — combining international expertise, modern construction methods and investment-driven development to create sustainable, high-value urban assets.",
+    about_vision_t: "Vision",
+    about_vision_p: "To become the leading premium developer in Central Asia — shaping modern urban environments and creating long-term value for residents, partners and investors.",
+    about_mission_t: "Mission",
+    about_mission_p: "To convert land, capital and expertise into the region's best-in-class residential and commercial assets through transparent, structured partnerships.",
+    exp_eyebrow: "02 — Core expertise",
+    exp_h: "Across the full development lifecycle.",
+    exp_1_t: "Development & structuring",
+    exp_1_a: "Land acquisition & partnership structuring",
+    exp_1_b: "Feasibility & financial modelling",
+    exp_1_c: "Project concept & product strategy",
+    exp_2_t: "Construction & delivery",
+    exp_2_a: "Contractor management",
+    exp_2_b: "Cost control & optimisation",
+    exp_2_c: "Quality assurance at every stage",
+    exp_3_t: "Commercial strategy",
+    exp_3_a: "Sales & leasing strategy",
+    exp_3_b: "Market positioning",
+    exp_3_c: "Asset value optimisation",
+    exp_4_t: "Partnership & investment",
+    exp_4_a: "Land-for-units model",
+    exp_4_b: "Capital partnerships",
+    exp_4_c: "Structured development partnerships",
+    lfu_eyebrow: "03 — Partnership models",
+    lfu_intro: "Three ways to develop together. Each model converts a different input — land, capital, or expertise — into a share of premium real estate.",
+    lfu_1_step: "01 Concept",
+    lfu_1_title: "Land-for-units",
+    lfu_1_h: "Land becomes equity.",
+    lfu_1_body: "Landowners contribute land for development and receive a share of completed units in return — converting raw plots into long-term, income-generating assets.",
+    lfu_1_b1: "No need to finance construction",
+    lfu_1_b2: "Participation in premium projects",
+    lfu_1_b3: "Higher value than direct land sale",
+    lfu_1_b4: "Transparent, structured partnership",
+    lfu_1_b5: "Access to professional development expertise",
+    lfu_2_step: "02 Development management",
+    lfu_2_title: "Development management",
+    lfu_2_h: "We run the build for you.",
+    lfu_2_body: "End-to-end development management for owners and investors who hold land but lack the platform — feasibility through to handover.",
+    lfu_2_b1: "Feasibility, design and budget control",
+    lfu_2_b2: "Tendering and contractor management",
+    lfu_2_b3: "Cost, quality and program oversight",
+    lfu_2_b4: "Sales and leasing positioning",
+    lfu_3_step: "03 Capital partnership",
+    lfu_3_title: "Capital partnership",
+    lfu_3_h: "Equity into premium pipeline.",
+    lfu_3_body: "We invite institutional and private capital into a curated pipeline of premium residential and commercial projects across the region.",
+    lfu_3_b1: "Project-level and platform-level vehicles",
+    lfu_3_b2: "Targeted regional exposure",
+    lfu_3_b3: "Premium segment, urban locations",
+    lfu_3_b4: "Quarterly investor reporting",
+    flow_input: "INPUT", flow_platform: "PLATFORM", flow_process: "PROCESS", flow_return: "RETURN",
+    pf_eyebrow: "04 — Portfolio",
+    pf_h_pre: "",
+    pf_h_post: " m²+ delivered · ",
+    pf_h_units: " units across the platform.",
+    pf_lead: "Over 25 years and 2,000,000+ m² delivered. The 12 projects below are our currently active and recently completed schemes across Kyrgyzstan; +13 more in pipeline.",
+    pf_pipeline: "+13 in pipeline",
+    pf_pipeline_sub: "Premium & comfort schemes in feasibility and pre-construction",
+    pf_col_n: "№", pf_col_project: "Project", pf_col_class: "Class",
+    pf_col_floors: "Floors", pf_col_units: "Units", pf_col_area: "Area, m²",
+    pf_total: "Total",
+    pf_flagship: "Flagship",
+    pf_class_p: "Premium",
+    pf_class_c: "Comfort",
+    mk_eyebrow: "05 — Geography of operations",
+    mk_h: "Home base. Partner markets.",
+    mk_lead: "Headquartered in the Kyrgyz Republic with active partner markets across Central Asia, Türkiye and the Gulf.",
+    mk_role_home: "Home base",
+    mk_role_partner: "Partner market",
+    sus_eyebrow: "06 — Sustainability & governance",
+    sus_h: "Four policies — embedded in every project.",
+    sus_s1_tag: "Innovation & technology",
+    sus_s1_t: "Modern systems, applied locally.",
+    sus_s1_lede: "We adopt construction technologies that improve quality, speed and lifecycle performance — transferred from international markets and adapted for our region.",
+    sus_s1_p1: "Industrialised construction methods and modular elements",
+    sus_s1_p2: "BIM-led design coordination across consultants and contractors",
+    sus_s1_p3: "Digital cost control, scheduling and quality reporting",
+    sus_s1_p4: "Smart-building infrastructure ready for residential and commercial assets",
+    sus_s1_k1_v: "BIM", sus_s1_k1_l: "Design standard",
+    sus_s1_k2_v: "100%", sus_s1_k2_l: "Digital site reporting",
+    sus_s2_tag: "Climate & environment",
+    sus_s2_t: "Building for a changing climate.",
+    sus_s2_lede: "Our projects are designed for the climate they operate in — passive performance first, then efficient systems, then sensible material choices over the building's full life.",
+    sus_s2_p1: "Passive design — orientation, shading, cross-ventilation",
+    sus_s2_p2: "Energy-efficient envelopes, glazing and HVAC selection",
+    sus_s2_p3: "Water-sensitive design: harvesting, reuse, low-flow fixtures",
+    sus_s2_p4: "Locally-sourced materials where quality permits",
+    sus_s2_k1_v: "≥30%", sus_s2_k1_l: "Operational energy reduction target",
+    sus_s2_k2_v: "Zero", sus_s2_k2_l: "Net loss of mature trees, where feasible",
+    sus_s3_tag: "Health & safety",
+    sus_s3_t: "Safe sites. Healthy buildings.",
+    sus_s3_lede: "On site and in finished assets, we hold ourselves to international H&S standards — for our workers, our contractors, and the people who eventually live and work in what we build.",
+    sus_s3_p1: "Documented site H&S plan on every project",
+    sus_s3_p2: "Mandatory PPE and certified contractor onboarding",
+    sus_s3_p3: "Independent quality and safety audits at key milestones",
+    sus_s3_p4: "Indoor-air-quality and daylight standards in residential design",
+    sus_s3_k1_v: "0", sus_s3_k1_l: "Tolerance for serious incidents",
+    sus_s3_k2_v: "ISO-aligned", sus_s3_k2_l: "H&S management",
+    sus_s4_tag: "Governance & ethics",
+    sus_s4_t: "Transparent. Structured. Accountable.",
+    sus_s4_lede: "We run NEO Living as an institutional-grade platform from day one — clear governance, clean reporting, and a zero-tolerance stance on bribery and corruption.",
+    sus_s4_p1: "Anti-bribery & anti-corruption policy across the group",
+    sus_s4_p2: "KYC and source-of-funds checks on partners and investors",
+    sus_s4_p3: "Independent project reporting to investors and JV partners",
+    sus_s4_p4: "Code of conduct for staff, contractors and suppliers",
+    sus_s4_k1_v: "Quarterly", sus_s4_k1_l: "Investor reporting cadence",
+    sus_s4_k2_v: "Zero", sus_s4_k2_l: "Tolerance: bribery & corruption",
+    ct_eyebrow: "07 — Contact",
+    ct_h_a: "Let's ", ct_h_b: "build.",
+    ct_lead: "Bring us land, capital, or a mandate. We'll respond within two business days with a clear next step — typically a 30-minute call to scope the opportunity.",
+    ct_field_name: "Full name",
+    ct_field_org: "Organisation",
+    ct_field_role: "I am a",
+    ct_field_msg: "What would you like to discuss?",
+    ct_role_landowner: "Landowner",
+    ct_role_investor: "Investor",
+    ct_role_institution: "Institution",
+    ct_role_other: "Press / other",
+    ct_msg_ph: "A plot, a co-investment, a mandate…",
+    ct_name_ph: "Your name",
+    ct_org_ph: "Company / individual",
+    ct_agree: "By sending this form, you agree to be contacted by NEO Living Developments regarding your enquiry.",
+    ct_send: "Send enquiry",
+    ct_thx_eyebrow: "Request received",
+    ct_thx_h_pre: "Thank you, ",
+    ct_thx_p_a: "A member of the NEO Living team will reply to ",
+    ct_thx_p_b: " within two business days.",
+    ct_office: "Office",
+    ct_office_v: "Kampala\nUganda",
+    ct_coverage: "Coverage",
+    ct_coverage_v: "KG · KZ · UZ\nTR · AE",
+    ct_response: "Response",
+    ct_response_v: "Within 2\nbusiness days",
+    ct_segments: "Segments",
+    ct_segments_v: "Premium\nComfort",
+    err_required: "required",
+    err_msg: "tell us a bit more",
+    ft_about: "A premium real estate development platform transforming land into high-quality residential and commercial assets across Kyrgyzstan and the region.",
+    ft_h_platform: "Platform",
+    ft_h_partner: "Partner",
+    ft_h_contact: "Contact",
+    ft_link_landowners: "Landowners",
+    ft_link_investors: "Investors",
+    ft_link_institutions: "Institutions",
+    ft_link_lfu: "Land-for-units",
+    ft_copy: "© 2026 NEO Living Developments",
+    ft_v: "v 2.0",
+    section: "SECTION",
+    of: "OF",
+    lang_label: "Language",
+    lang_en: "EN",
+    lang_sw: "SW",
+  },
+  sw: {
+    nav_about: "Kuhusu",
+    nav_expertise: "Utaalamu",
+    nav_partnership: "Ushirikiano",
+    nav_portfolio: "Miradi",
+    nav_markets: "Masoko",
+    nav_sustainability: "Uendelevu",
+    nav_contact: "Mawasiliano",
+    nav_cta: "Shirikiana nasi",
+    hero_meta_l_top: "ASIA YA KATI",
+    hero_meta_l_bot: "Mtengenezaji wa mali isiyohamishika",
+    hero_meta_r_top: "N 42°52′ / E 74°36′",
+    hero_meta_r_bot: "Jamhuri ya Kyrgyz · Eneo · 2026",
+    hero_h1_a: "Ardhi kuwa",
+    hero_h1_b: "alama maarufu.",
+    hero_h1_sub: "Maendeleo ya kiwango cha juu Asia ya Kati na zaidi.",
+    hero_lead: "NEO Living Developments hubadilisha ardhi kuwa mali bora za makazi na biashara — ikichanganya uzoefu wa miaka 25+, mbinu za kisasa za ujenzi na mifano ya ushirikiano iliyopangwa.",
+    hero_cta_primary: "Shirikiana nasi",
+    hero_cta_secondary: "Miradi yetu",
+    stats_years: "Uzoefu wa pamoja wa timu",
+    stats_area: "Imejengwa: makazi na biashara",
+    stats_projects: "Miradi katika kundi",
+    stats_units: "Vyumba katika ujenzi",
+    stats_projects_sub: "12 imekamilika · 13 katika mpango",
+    about_eyebrow: "01 — Kuhusu",
+    about_h: "Jukwaa la maendeleo ya kiwango cha juu.",
+    about_p1_pre: "NEO Living Developments",
+    about_p1_post: " ni kampuni ya maendeleo ya mali isiyohamishika ya kiwango cha juu, inayojishughulisha na miradi ya makazi na biashara nchini Kyrgyzstan na eneo lote.",
+    about_p2: "Tunaleta pamoja zaidi ya miaka 25 ya uzoefu wa pamoja na zaidi ya mita za mraba 2,000,000 zilizojengwa — tukichanganya utaalamu wa kimataifa, mbinu za kisasa za ujenzi na maendeleo yanayoongozwa na uwekezaji ili kuunda mali endelevu zenye thamani kubwa.",
+    about_vision_t: "Maono",
+    about_vision_p: "Kuwa mtengenezaji mkuu wa kiwango cha juu Asia ya Kati — kuunda mazingira ya kisasa ya mijini na kuleta thamani ya muda mrefu kwa wakazi, washirika na wawekezaji.",
+    about_mission_t: "Dhamira",
+    about_mission_p: "Kubadilisha ardhi, mtaji na utaalamu kuwa mali bora kabisa za makazi na biashara katika eneo kupitia ushirikiano uliopangwa kwa uwazi.",
+    exp_eyebrow: "02 — Utaalamu wa msingi",
+    exp_h: "Katika mzunguko mzima wa maendeleo.",
+    exp_1_t: "Maendeleo na muundo",
+    exp_1_a: "Upataji wa ardhi na muundo wa ushirikiano",
+    exp_1_b: "Uwezekano na mfano wa kifedha",
+    exp_1_c: "Dhana ya mradi na mkakati wa bidhaa",
+    exp_2_t: "Ujenzi na utoaji",
+    exp_2_a: "Usimamizi wa makandarasi",
+    exp_2_b: "Udhibiti na ufanisi wa gharama",
+    exp_2_c: "Uthibitisho wa ubora kila hatua",
+    exp_3_t: "Mkakati wa kibiashara",
+    exp_3_a: "Mkakati wa mauzo na ukodishaji",
+    exp_3_b: "Mahali kwenye soko",
+    exp_3_c: "Uboreshaji wa thamani ya mali",
+    exp_4_t: "Ushirikiano na uwekezaji",
+    exp_4_a: "Mfano wa ardhi-kwa-vyumba",
+    exp_4_b: "Ushirikiano wa mtaji",
+    exp_4_c: "Ushirikiano uliopangwa wa maendeleo",
+    lfu_eyebrow: "03 — Mifano ya ushirikiano",
+    lfu_intro: "Njia tatu za kuendeleza pamoja. Kila mfano hubadilisha kuingiza tofauti — ardhi, mtaji au utaalamu — kuwa sehemu ya mali isiyohamishika ya kiwango cha juu.",
+    lfu_1_step: "01 Dhana",
+    lfu_1_title: "Ardhi-kwa-vyumba",
+    lfu_1_h: "Ardhi inakuwa mtaji.",
+    lfu_1_body: "Wamiliki wa ardhi huchangia ardhi kwa maendeleo na kupokea sehemu ya vyumba vilivyokamilishwa kama malipo — kubadilisha viwanja kuwa mali za muda mrefu zinazozalisha mapato.",
+    lfu_1_b1: "Hakuna haja ya kufadhili ujenzi",
+    lfu_1_b2: "Ushiriki katika miradi ya kiwango cha juu",
+    lfu_1_b3: "Thamani kubwa kuliko uuzaji wa moja kwa moja",
+    lfu_1_b4: "Ushirikiano uliopangwa kwa uwazi",
+    lfu_1_b5: "Upatikanaji wa utaalamu wa kitaalamu",
+    lfu_2_step: "02 Usimamizi",
+    lfu_2_title: "Usimamizi wa maendeleo",
+    lfu_2_h: "Tunaendesha ujenzi kwa niaba yako.",
+    lfu_2_body: "Usimamizi kamili wa maendeleo kwa wamiliki na wawekezaji walio na ardhi lakini hawana jukwaa — kutoka uwezekano hadi makabidhiano.",
+    lfu_2_b1: "Uwezekano, muundo na udhibiti wa bajeti",
+    lfu_2_b2: "Zabuni na usimamizi wa makandarasi",
+    lfu_2_b3: "Usimamizi wa gharama, ubora na ratiba",
+    lfu_2_b4: "Mahali pa mauzo na ukodishaji",
+    lfu_3_step: "03 Ushirikiano wa mtaji",
+    lfu_3_title: "Ushirikiano wa mtaji",
+    lfu_3_h: "Mtaji katika mpango wa kiwango cha juu.",
+    lfu_3_body: "Tunakaribisha mtaji wa kitaasisi na binafsi katika mpango uliokusanywa wa miradi ya kiwango cha juu ya makazi na biashara katika eneo lote.",
+    lfu_3_b1: "Vyombo vya kiwango cha mradi na cha jukwaa",
+    lfu_3_b2: "Mfichuo wa kikanda uliolenga",
+    lfu_3_b3: "Sehemu ya kiwango cha juu, maeneo ya mijini",
+    lfu_3_b4: "Ripoti ya kila robo kwa wawekezaji",
+    flow_input: "KUINGIZA", flow_platform: "JUKWAA", flow_process: "MCHAKATO", flow_return: "MAREJESHO",
+    pf_eyebrow: "04 — Miradi",
+    pf_h_pre: "",
+    pf_h_post: " m²+ iliyokamilika · ",
+    pf_h_units: " vyumba katika jukwaa.",
+    pf_lead: "Zaidi ya miaka 25 na m² 2,000,000+ iliyokamilika. Miradi 12 hapa chini ndio inayoendelea sasa na iliyokamilika hivi karibuni Kyrgyzstan; +13 zaidi katika mpango.",
+    pf_pipeline: "+13 katika mpango",
+    pf_pipeline_sub: "Miradi ya Premium na Comfort katika upembuzi yakinifu na maandalizi ya ujenzi",
+    pf_col_n: "Na.", pf_col_project: "Mradi", pf_col_class: "Daraja",
+    pf_col_floors: "Sakafu", pf_col_units: "Vyumba", pf_col_area: "Eneo, m²",
+    pf_total: "Jumla",
+    pf_flagship: "Mradi mkuu",
+    pf_class_p: "Premium",
+    pf_class_c: "Comfort",
+    mk_eyebrow: "05 — Jiografia ya shughuli",
+    mk_h: "Makao makuu. Masoko washirika.",
+    mk_lead: "Makao makuu yapo Jamhuri ya Kyrgyz na masoko washirika hai katika Asia ya Kati, Türkiye na Ghuba.",
+    mk_role_home: "Makao makuu",
+    mk_role_partner: "Soko washirika",
+    sus_eyebrow: "06 — Uendelevu na utawala",
+    sus_h: "Sera nne — zilizopachikwa katika kila mradi.",
+    sus_s1_tag: "Uvumbuzi na teknolojia",
+    sus_s1_t: "Mifumo ya kisasa, iliyotumika ndani ya nchi.",
+    sus_s1_lede: "Tunatumia teknolojia za ujenzi zinazoboresha ubora, kasi na utendaji wa mzunguko wa maisha — zilizoletwa kutoka masoko ya kimataifa na kurekebishwa kwa eneo letu.",
+    sus_s1_p1: "Mbinu za ujenzi za kiwanda na vipengele vya kawaida",
+    sus_s1_p2: "Uratibu wa muundo unaoongozwa na BIM kwa washauri na makandarasi",
+    sus_s1_p3: "Udhibiti wa kidijitali wa gharama, ratiba na ripoti ya ubora",
+    sus_s1_p4: "Miundombinu ya majengo mahiri tayari kwa makazi na biashara",
+    sus_s1_k1_v: "BIM", sus_s1_k1_l: "Kiwango cha muundo",
+    sus_s1_k2_v: "100%", sus_s1_k2_l: "Ripoti ya kidijitali ya tovuti",
+    sus_s2_tag: "Hali ya hewa na mazingira",
+    sus_s2_t: "Kujenga kwa hali ya hewa inayobadilika.",
+    sus_s2_lede: "Miradi yetu imeundwa kwa hali ya hewa wanapofanya kazi — utendaji wa kupendeza kwanza, kisha mifumo bora, kisha chaguo za nyenzo zinazofaa katika maisha yote ya jengo.",
+    sus_s2_p1: "Muundo wa kupendeza — mwelekeo, kivuli, mzunguko wa hewa",
+    sus_s2_p2: "Bahasha za nguvu bora, vioo na uchaguzi wa HVAC",
+    sus_s2_p3: "Muundo nyeti wa maji: ukusanyaji, matumizi tena, vifaa vya mtiririko mdogo",
+    sus_s2_p4: "Nyenzo za ndani pale ubora unaporuhusu",
+    sus_s2_k1_v: "≥30%", sus_s2_k1_l: "Lengo la kupunguza nishati",
+    sus_s2_k2_v: "Sifuri", sus_s2_k2_l: "Hasara ya miti iliyokomaa, inapowezekana",
+    sus_s3_tag: "Afya na usalama",
+    sus_s3_t: "Tovuti salama. Majengo yenye afya.",
+    sus_s3_lede: "Tovuti na katika mali zilizokamilika, tunajiwekea viwango vya kimataifa vya H&S — kwa wafanyakazi wetu, makandarasi wetu na watu watakaoishi na kufanya kazi katika tunachojenga.",
+    sus_s3_p1: "Mpango ulioandikwa wa H&S kila mradi",
+    sus_s3_p2: "PPE ya lazima na uingizaji wa makandarasi walioidhinishwa",
+    sus_s3_p3: "Ukaguzi wa kujitegemea wa ubora na usalama",
+    sus_s3_p4: "Viwango vya hewa ya ndani na mwanga wa mchana katika muundo",
+    sus_s3_k1_v: "0", sus_s3_k1_l: "Uvumilivu kwa matukio mabaya",
+    sus_s3_k2_v: "ISO", sus_s3_k2_l: "Usimamizi wa H&S",
+    sus_s4_tag: "Utawala na maadili",
+    sus_s4_t: "Wazi. Iliyopangwa. Uwajibikaji.",
+    sus_s4_lede: "Tunaendesha NEO Living kama jukwaa la kiwango cha kitaasisi tangu siku ya kwanza — utawala wazi, ripoti safi, na msimamo wa sifuri kwa rushwa na ufisadi.",
+    sus_s4_p1: "Sera ya kupambana na rushwa katika kundi zima",
+    sus_s4_p2: "Ukaguzi wa KYC na vyanzo vya fedha",
+    sus_s4_p3: "Ripoti ya kujitegemea ya mradi kwa wawekezaji na washirika",
+    sus_s4_p4: "Kanuni za maadili kwa wafanyakazi, makandarasi na wauzaji",
+    sus_s4_k1_v: "Kila robo", sus_s4_k1_l: "Mzunguko wa ripoti kwa wawekezaji",
+    sus_s4_k2_v: "Sifuri", sus_s4_k2_l: "Uvumilivu: rushwa na ufisadi",
+    ct_eyebrow: "07 — Mawasiliano",
+    ct_h_a: "Tujenge ", ct_h_b: "pamoja.",
+    ct_lead: "Lete ardhi, mtaji au mamlaka. Tutajibu ndani ya siku mbili za kazi na hatua inayofuata wazi — kwa kawaida simu ya dakika 30 kuelezea fursa.",
+    ct_field_name: "Jina kamili",
+    ct_field_org: "Shirika",
+    ct_field_role: "Mimi ni",
+    ct_field_msg: "Ungependa kujadili nini?",
+    ct_role_landowner: "Mmiliki wa ardhi",
+    ct_role_investor: "Mwekezaji",
+    ct_role_institution: "Taasisi",
+    ct_role_other: "Vyombo vya habari / mengineyo",
+    ct_msg_ph: "Kiwanja, uwekezaji wa pamoja, mamlaka…",
+    ct_name_ph: "Jina lako",
+    ct_org_ph: "Kampuni / mtu binafsi",
+    ct_agree: "Kwa kutuma fomu hii, unakubali kuwasiliana na NEO Living Developments kuhusu swali lako.",
+    ct_send: "Tuma swali",
+    ct_thx_eyebrow: "Ombi limepokelewa",
+    ct_thx_h_pre: "Asante, ",
+    ct_thx_p_a: "Mwanachama wa timu ya NEO Living atajibu kwa ",
+    ct_thx_p_b: " ndani ya siku mbili za kazi.",
+    ct_office: "Ofisi",
+    ct_office_v: "Kampala\nUganda",
+    ct_coverage: "Eneo",
+    ct_coverage_v: "KG · KZ · UZ\nTR · AE",
+    ct_response: "Jibu",
+    ct_response_v: "Ndani ya siku\nmbili za kazi",
+    ct_segments: "Sehemu",
+    ct_segments_v: "Premium\nComfort",
+    err_required: "inahitajika",
+    err_msg: "tueleze zaidi",
+    ft_about: "Jukwaa la maendeleo ya mali isiyohamishika ya kiwango cha juu, linabadilisha ardhi kuwa mali bora za makazi na biashara katika Kyrgyzstan na eneo lote.",
+    ft_h_platform: "Jukwaa",
+    ft_h_partner: "Mshirika",
+    ft_h_contact: "Mawasiliano",
+    ft_link_landowners: "Wamiliki wa ardhi",
+    ft_link_investors: "Wawekezaji",
+    ft_link_institutions: "Taasisi",
+    ft_link_lfu: "Ardhi-kwa-vyumba",
+    ft_copy: "© 2026 NEO Living Developments",
+    ft_v: "v 2.0",
+    section: "SEHEMU",
+    of: "YA",
+    lang_label: "Lugha",
+    lang_en: "EN",
+    lang_sw: "SW",
+  },
+};
+
+const I18nContext = React.createContext({ t: (k) => k, lang: "en", setLang: () => {} });
+const useT = () => React.useContext(I18nContext);
+
+window.STRINGS = STRINGS;
+window.I18nContext = I18nContext;
+window.useT = useT;
+
+// data.jsx
+const PROJECTS = [
+  { slug: "amanat", name: "Amanat Residence", area: 84830, units: 1070, floors: 15, cls: "Premium", img: "assets/amanat.jpeg", flag: "Flagship" },
+  { slug: "yuzh-ala-archa", name: "South Ala-Archa", area: 43779, units: 506, floors: 16, cls: "Premium", img: "assets/yuzh-ala-archa.jpeg", flag: "Flagship" },
+  { slug: "the-garden", name: "The Garden", area: 26255, units: 314, floors: 15, cls: "Premium", img: "assets/the-garden.jpeg" },
+  { slug: "venetsia", name: "Venezia", area: 17598, units: 222, floors: 14, cls: "Premium", img: "assets/venetsia.jpeg" },
+  { slug: "riverside", name: "Riverside", area: 14980, units: 182, floors: 15, cls: "Premium", img: "assets/riverside.png" },
+  { slug: "rabat", name: "Rabat", area: 14883, units: 168, floors: 16, cls: "Premium", img: "assets/rabat.png" },
+  { slug: "vegas", name: "Vegas", area: 14568, units: 174, floors: 14, cls: "Comfort", img: "assets/vegas.jpeg" },
+  { slug: "aman", name: "Aman", area: 14000, units: 204, floors: 18, cls: "Premium", img: "assets/aman.jpeg" },
+  { slug: "central-park", name: "Central Park", area: 12989, units: 143, floors: 15, cls: "Premium", img: "assets/central-park.png" },
+  { slug: "kosmos", name: "Cosmos", area: 10788, units: 189, floors: 12, cls: "Comfort", img: "assets/kosmos.jpeg" },
+  { slug: "ala-archa", name: "Ala-Archa", area: 10622, units: 121, floors: 12, cls: "Comfort", img: "assets/ala-archa.jpeg" },
+  { slug: "muras", name: "Muras", area: 5866, units: 91, floors: 10, cls: "Comfort", img: "assets/muras.jpeg" },
+];
+
+const PIPELINE_COUNT = 13;
+const TOTAL_PROJECTS = PROJECTS.length + PIPELINE_COUNT;
+const _delivered = PROJECTS.reduce((a, p) => ({ area: a.area + p.area, units: a.units + p.units, count: a.count + 1 }), { area: 0, units: 0, count: 0 });
+const TOTALS = { ..._delivered, total: TOTAL_PROJECTS, pipeline: PIPELINE_COUNT };
+
+const fmt = (n) => n.toLocaleString("en-US");
+
+const GEO = [
+  { code: "KG", name: "Kyrgyzstan", role: "home" },
+  { code: "KZ", name: "Kazakhstan", role: "partner" },
+  { code: "UZ", name: "Uzbekistan", role: "partner" },
+  { code: "TR", name: "Türkiye", role: "partner" },
+  { code: "AE", name: "UAE · Dubai", role: "partner" },
+];
+
+window.PROJECTS = PROJECTS;
+window.TOTALS = TOTALS;
+window.PIPELINE_COUNT = PIPELINE_COUNT;
+window.TOTAL_PROJECTS = TOTAL_PROJECTS;
+window.fmt = fmt;
+window.GEO = GEO;
+
+// sections.jsx
+const Eyebrow = ({ children, dark }) => (
+  <span className={`eyebrow ${dark ? "dark" : ""}`}>
+    <span className="dot"></span>{children}
+  </span>
+);
+
+const Nav = () => {
+  const { t, lang, setLang } = useT();
+  const [scrolled, setScrolled] = React.useState(false);
+  React.useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <nav className={`nav ${scrolled ? "scrolled" : "dark"}`}>
+      <NLLogo light={false} compact={false} />
+      <div className="nav-links">
+        <a href="#about">{t("nav_about")}</a>
+        <a href="#expertise">{t("nav_expertise")}</a>
+        <a href="#partnership">{t("nav_partnership")}</a>
+        <a href="#portfolio">{t("nav_portfolio")}</a>
+        <a href="#markets">{t("nav_markets")}</a>
+        <a href="#sustainability">{t("nav_sustainability")}</a>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <div className="lang-switch" role="group" aria-label={t("lang_label")}>
+          <button className={lang === "en" ? "active" : ""} onClick={() => setLang("en")}>EN</button>
+          <span className="sep">/</span>
+          <button className={lang === "sw" ? "active" : ""} onClick={() => setLang("sw")}>SW</button>
+        </div>
+        <a href="#contact" className="nav-cta">{t("nav_cta")}</a>
+      </div>
+    </nav>
+  );
+};
+
+const Hero = () => {
+  const { t } = useT();
+  return (
+    <section className="hero" id="home">
+      <div className="hero-bg"></div>
+      <div className="hero-grid"></div>
+      <div className="hero-tower"></div>
+
+      <div className="hero-inner">
+        <div className="hero-meta" style={{ marginBottom: "auto" }}>
+          <div className="col">
+            <strong>{t("hero_meta_l_top")}</strong>
+            {t("hero_meta_l_bot")}
+          </div>
+          <div className="col" style={{ textAlign: "right" }}>
+            <strong>{t("hero_meta_r_top")}</strong>
+            {t("hero_meta_r_bot")}
+          </div>
+        </div>
+
+        <div className="hero-headline">
+          <h1>
+            {t("hero_h1_a")}<br/>{t("hero_h1_b")}
+            <span className="light">{t("hero_h1_sub")}</span>
+          </h1>
+
+          <div className="hero-sub">
+            <p>{t("hero_lead")}</p>
+            <div className="hero-cta">
+              <a href="#partnership" className="btn">{t("hero_cta_primary")} <span className="arr">→</span></a>
+              <a href="#portfolio" className="btn outline ghost-light">{t("hero_cta_secondary")}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="hero-marquee" aria-hidden="true">
+        <div className="track">
+          {Array(2).fill(0).map((_, k) => (
+            <span key={k} style={{ display: "inline-flex", gap: 80 }}>
+              <span>Kyrgyzstan</span><span>Kazakhstan</span><span>Uzbekistan</span><span>Türkiye</span>
+              <span>UAE</span>
+              <span>Premium</span><span>Comfort</span><span>Land-for-units</span>
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Stats = () => {
+  const { t } = useT();
+  const items = [
+    { num: "25", unit: "+ years", label: t("stats_years") },
+    { num: "2M", unit: "+ m²", label: t("stats_area") },
+    { num: String(TOTAL_PROJECTS), unit: "projects", label: t("stats_projects") },
+    { num: fmt(TOTALS.units), unit: "units", label: t("stats_units") },
+  ];
+  return (
+    <section className="stats">
+      <div className="container">
+        <div className="stats-grid">
+          {items.map((s, i) => (
+            <div className="stat" key={i}>
+              <div className="num">{s.num}<span className="unit">{s.unit}</span></div>
+              <div className="label">{s.label}</div>
+              {i === 2 && <div className="sublabel">{t("stats_projects_sub")}</div>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const About = () => {
+  const { t } = useT();
+  return (
+    <section className="about" id="about">
+      <div className="container">
+        <div className="sec-head">
+          <div className="left">
+            <Eyebrow>{t("about_eyebrow")}</Eyebrow>
+            <div className="num" style={{ marginTop: 32 }}>{t("section")} 01 / 07</div>
+          </div>
+          <h2 className="display-lg">{t("about_h")}</h2>
+        </div>
+
+        <div className="about-grid">
+          <div className="copy">
+            <p><strong>{t("about_p1_pre")}</strong>{t("about_p1_post")}</p>
+            <p>{t("about_p2")}</p>
+            <p style={{ marginTop: 32, paddingTop: 32, borderTop: "1px solid var(--rule)" }}>
+              <span className="eyebrow" style={{ display: "block", marginBottom: 16 }}><span className="dot"></span>{t("about_vision_t")}</span>
+              {t("about_vision_p")}
+            </p>
+            <p style={{ marginTop: 24, paddingTop: 24, borderTop: "1px solid var(--rule)" }}>
+              <span className="eyebrow" style={{ display: "block", marginBottom: 16 }}><span className="dot"></span>{t("about_mission_t")}</span>
+              {t("about_mission_p")}
+            </p>
+          </div>
+          <div>
+            <div style={{ position: "relative", aspectRatio: "3 / 4", overflow: "hidden", background: "var(--bone)" }}>
+              <img src="assets/amanat.jpeg" alt="Amanat Residence" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <span style={{ position: "absolute", left: 16, bottom: 16, fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.95)", background: "rgba(0,0,0,0.5)", padding: "6px 10px", backdropFilter: "blur(4px)" }}>Amanat Residence · Flagship</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Expertise = () => {
+  const { t } = useT();
+  const cards = [
+    { n: "01", t: t("exp_1_t"), items: [t("exp_1_a"), t("exp_1_b"), t("exp_1_c")], icon: "◇" },
+    { n: "02", t: t("exp_2_t"), items: [t("exp_2_a"), t("exp_2_b"), t("exp_2_c")], icon: "◈" },
+    { n: "03", t: t("exp_3_t"), items: [t("exp_3_a"), t("exp_3_b"), t("exp_3_c")], icon: "△" },
+    { n: "04", t: t("exp_4_t"), items: [t("exp_4_a"), t("exp_4_b"), t("exp_4_c")], icon: "⬡" },
+  ];
+  return (
+    <section className="expertise" id="expertise">
+      <div className="container">
+        <div className="sec-head">
+          <div className="left">
+            <Eyebrow>{t("exp_eyebrow")}</Eyebrow>
+            <div className="num" style={{ marginTop: 32 }}>{t("section")} 02 / 07</div>
+          </div>
+          <h2 className="display-lg">{t("exp_h")}</h2>
+        </div>
+        <div className="exp-grid">
+          {cards.map((c, i) => (
+            <div className="exp-card" key={i}>
+              <div className="num">{c.n}</div>
+              <h3>{c.t}</h3>
+              <ul>{c.items.map((it, j) => <li key={j}>{it}</li>)}</ul>
+              <div className="icon" style={{ fontSize: 24, color: "var(--powder-deep)" }}>{c.icon}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const LandForUnits = () => {
+  const { t } = useT();
+  const [tab, setTab] = React.useState(0);
+  const tabs = [
+    { step: t("lfu_1_step"), title: t("lfu_1_title"), h: t("lfu_1_h"), body: t("lfu_1_body"),
+      bullets: [t("lfu_1_b1"), t("lfu_1_b2"), t("lfu_1_b3"), t("lfu_1_b4"), t("lfu_1_b5")],
+      input: "Land", process: "Develop · Build · Sell", out: "Share of units" },
+    { step: t("lfu_2_step"), title: t("lfu_2_title"), h: t("lfu_2_h"), body: t("lfu_2_body"),
+      bullets: [t("lfu_2_b1"), t("lfu_2_b2"), t("lfu_2_b3"), t("lfu_2_b4")],
+      input: "Asset", process: "Manage · Deliver", out: "Completed asset" },
+    { step: t("lfu_3_step"), title: t("lfu_3_title"), h: t("lfu_3_h"), body: t("lfu_3_body"),
+      bullets: [t("lfu_3_b1"), t("lfu_3_b2"), t("lfu_3_b3"), t("lfu_3_b4")],
+      input: "Capital", process: "Allocate · Report", out: "Project equity" },
+  ];
+  const cur = tabs[tab];
+
+  return (
+    <section className="lfu" id="partnership">
+      <div className="container">
+        <div className="lfu-head">
+          <div>
+            <Eyebrow dark>{t("lfu_eyebrow")}</Eyebrow>
+            <div className="num" style={{ marginTop: 32, color: "rgba(255,255,255,0.5)" }}>{t("section")} 03 / 07</div>
+          </div>
+          <p>{t("lfu_intro")}</p>
+        </div>
+
+        <div className="lfu-tabs" role="tablist">
+          {tabs.map((tb, i) => (
+            <button key={i} className={`lfu-tab ${i === tab ? "active" : ""}`} onClick={() => setTab(i)} role="tab" aria-selected={i === tab}>
+              <span className="step">{tb.step}</span>
+              <span className="ttl">{tb.title}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className="lfu-panel" key={tab}>
+          <div>
+            <h3>{cur.h}</h3>
+            <p className="body" style={{ marginTop: 24 }}>{cur.body}</p>
+            <ul className="lfu-bullets">
+              {cur.bullets.map((b, i) => (
+                <li key={i}>
+                  <span className="b-num">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="b-text">{b}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="lfu-diagram" aria-hidden="true">
+            <div className="dlabel">Flow · {cur.title}</div>
+            <div className="dnodes">
+              <div className="node"><span className="ntag">{t("flow_input")}</span><strong>{cur.input}</strong></div>
+              <div className="node"><span className="ntag">{t("flow_platform")}</span><strong>NEO Living</strong></div>
+              <div className="node"><span className="ntag">{t("flow_process")}</span><strong>{cur.process}</strong></div>
+              <div className="node hi"><span className="ntag">{t("flow_return")}</span><strong>{cur.out}</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Portfolio = () => {
+  const { t } = useT();
+  const [filter, setFilter] = React.useState("all");
+  const list = filter === "all" ? PROJECTS : PROJECTS.filter(p => p.cls.toLowerCase() === filter);
+  const filtered = list.reduce((a, p) => ({ area: a.area + p.area, units: a.units + p.units, count: a.count + 1 }), { area: 0, units: 0, count: 0 });
+
+  return (
+    <section className="portfolio" id="portfolio">
+      <div className="container">
+        <div className="sec-head">
+          <div className="left">
+            <Eyebrow>{t("pf_eyebrow")}</Eyebrow>
+            <div className="num" style={{ marginTop: 32 }}>{t("section")} 04 / 07</div>
+          </div>
+          <h2 className="display-lg">{t("pf_h_pre")}2,000,000{t("pf_h_post")}{fmt(TOTALS.units)}{t("pf_h_units")}</h2>
+        </div>
+
+        <div className="pf-controls">
+          <div className="pf-filters">
+            {[{ k: "all", n: "All" }, { k: "premium", n: t("pf_class_p") }, { k: "comfort", n: t("pf_class_c") }].map(f => (
+              <button key={f.k} className={`pf-chip ${filter === f.k ? "active" : ""}`} onClick={() => setFilter(f.k)}>{f.n}</button>
+            ))}
+          </div>
+          <div className="pf-totals">
+            <span><span className="lab">Showcased</span> <strong>{filtered.count} projects</strong></span>
+            <span><span className="lab">Area</span> <strong>{fmt(filtered.area)} m²</strong></span>
+            <span><span className="lab">Units</span> <strong>{fmt(filtered.units)}</strong></span>
+          </div>
+        </div>
+
+        <div className="pf-grid">
+          {list.map((p, i) => (
+            <article className="pf-card" key={p.slug}>
+              <div className="pf-img">
+                <img src={p.img} alt={p.name} />
+                {p.flag && <span className="pf-flag">{t("pf_flagship")}</span>}
+                <span className="pf-cls" data-cls={p.cls}>{p.cls === "Premium" ? t("pf_class_p") : t("pf_class_c")}</span>
+              </div>
+              <div className="pf-body">
+                <div className="pf-head">
+                  <span className="pf-num">№ {String(i + 1).padStart(2, "0")}</span>
+                  <h3>{p.name}</h3>
+                </div>
+                <div className="pf-stats">
+                  <div><span className="lab">m²</span><strong>{fmt(p.area)}</strong></div>
+                  <div><span className="lab">{t("pf_col_units")}</span><strong>{fmt(p.units)}</strong></div>
+                  <div><span className="lab">{t("pf_col_floors")}</span><strong>{p.floors}</strong></div>
+                </div>
+              </div>
+            </article>
+          ))}
+          {filter === "all" && (
+            <article className="pf-card pf-pipeline">
+              <div className="pf-pipeline-inner">
+                <span className="pf-num" style={{ color: "rgba(255,255,255,0.55)" }}>№ 13 — 25</span>
+                <div className="pf-pipeline-num">+{PIPELINE_COUNT}</div>
+                <h3>{t("pf_pipeline")}</h3>
+                <p>{t("pf_pipeline_sub")}</p>
+                <div className="pf-pipeline-rows" aria-hidden="true">
+                  {Array.from({ length: PIPELINE_COUNT }).map((_, k) => (
+                    <span key={k} className="pf-pipeline-row" style={{ animationDelay: `${k * 60}ms` }}></span>
+                  ))}
+                </div>
+              </div>
+            </article>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Markets = () => {
+  const { t } = useT();
+  return (
+    <section className="markets" id="markets">
+      <div className="container">
+        <div className="sec-head">
+          <div className="left">
+            <Eyebrow>{t("mk_eyebrow")}</Eyebrow>
+            <div className="num" style={{ marginTop: 32 }}>{t("section")} 05 / 07</div>
+          </div>
+          <h2 className="display-lg">{t("mk_h")}</h2>
+        </div>
+        <p className="lead" style={{ marginBottom: 40 }}>{t("mk_lead")}</p>
+        <div className="geo-grid">
+          {GEO.map((g, i) => (
+            <div key={g.code} className={`geo ${g.role === "home" ? "home" : ""}`}>
+              <div className="geo-code">{g.code}</div>
+              <div className="geo-name">{g.name}</div>
+              <div className="geo-role">{g.role === "home" ? t("mk_role_home") : t("mk_role_partner")}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Sustainability = () => {
+  const { t } = useT();
+  const [active, setActive] = React.useState(0);
+  const pillars = [
+    { code: "S1", tag: t("sus_s1_tag"), title: t("sus_s1_t"), lede: t("sus_s1_lede"),
+      points: [t("sus_s1_p1"), t("sus_s1_p2"), t("sus_s1_p3"), t("sus_s1_p4")],
+      kpis: [{ v: t("sus_s1_k1_v"), l: t("sus_s1_k1_l") }, { v: t("sus_s1_k2_v"), l: t("sus_s1_k2_l") }] },
+    { code: "S2", tag: t("sus_s2_tag"), title: t("sus_s2_t"), lede: t("sus_s2_lede"),
+      points: [t("sus_s2_p1"), t("sus_s2_p2"), t("sus_s2_p3"), t("sus_s2_p4")],
+      kpis: [{ v: t("sus_s2_k1_v"), l: t("sus_s2_k1_l") }, { v: t("sus_s2_k2_v"), l: t("sus_s2_k2_l") }] },
+    { code: "S3", tag: t("sus_s3_tag"), title: t("sus_s3_t"), lede: t("sus_s3_lede"),
+      points: [t("sus_s3_p1"), t("sus_s3_p2"), t("sus_s3_p3"), t("sus_s3_p4")],
+      kpis: [{ v: t("sus_s3_k1_v"), l: t("sus_s3_k1_l") }, { v: t("sus_s3_k2_v"), l: t("sus_s3_k2_l") }] },
+    { code: "S4", tag: t("sus_s4_tag"), title: t("sus_s4_t"), lede: t("sus_s4_lede"),
+      points: [t("sus_s4_p1"), t("sus_s4_p2"), t("sus_s4_p3"), t("sus_s4_p4")],
+      kpis: [{ v: t("sus_s4_k1_v"), l: t("sus_s4_k1_l") }, { v: t("sus_s4_k2_v"), l: t("sus_s4_k2_l") }] },
+  ];
+  const cur = pillars[active];
+
+  return (
+    <section className="sustain" id="sustainability">
+      <div className="container">
+        <div className="sec-head">
+          <div className="left">
+            <Eyebrow>{t("sus_eyebrow")}</Eyebrow>
+            <div className="num" style={{ marginTop: 32 }}>{t("section")} 06 / 07</div>
+          </div>
+          <h2 className="display-lg">{t("sus_h")}</h2>
+        </div>
+
+        <div className="sustain-grid">
+          <aside className="sustain-rail">
+            {pillars.map((p, i) => (
+              <button key={i} className={`sustain-rail-item ${i === active ? "active" : ""}`} onClick={() => setActive(i)}>
+                <span className="sr-code">{p.code}</span>
+                <span className="sr-tag">{p.tag}</span>
+                <span className="sr-arr">{i === active ? "●" : "○"}</span>
+              </button>
+            ))}
+          </aside>
+
+          <div className="sustain-panel" key={active + cur.tag}>
+            <div className="sustain-panel-head">
+              <span className="eyebrow"><span className="dot"></span>{cur.tag}</span>
+              <h3 className="display-md" style={{ marginTop: 20, maxWidth: "20ch" }}>{cur.title}</h3>
+              <p className="lead" style={{ marginTop: 24 }}>{cur.lede}</p>
+            </div>
+            <ul className="sustain-points">
+              {cur.points.map((pt, i) => (
+                <li key={i}>
+                  <span className="sp-num">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="sp-text">{pt}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="sustain-kpis">
+              {cur.kpis.map((k, i) => (
+                <div className="skpi" key={i}>
+                  <div className="skpi-v">{k.v}</div>
+                  <div className="skpi-l">{k.l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Contact = () => {
+  const { t } = useT();
+  const [form, setForm] = React.useState({ name: "", org: "", role: "", message: "" });
+  const [errors, setErrors] = React.useState({});
+  const [sent, setSent] = React.useState(false);
+  const [sending, setSending] = React.useState(false);
+  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const submit = async (e) => {
+    e.preventDefault();
+    const next = {};
+    if (!form.name.trim()) next.name = t("err_required");
+    if (!form.message.trim() || form.message.trim().length < 10) next.message = t("err_msg");
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
+
+    setSending(true);
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          access_key: "c014c0eb-33b3-4781-86a7-f3f666ae8bce",
+          subject: `New enquiry from ${form.name} — NEO Living`,
+          from_name: "NEO Living website",
+          name: form.name,
+          organization: form.org || "—",
+          role: form.role || "—",
+          message: form.message
+        })
+      });
+      const data = await res.json().catch(() => ({}));
+      console.log("[contact] web3forms response:", res.status, data);
+      if (!res.ok || !data.success) throw new Error(data.message || "send failed");
+      setSent(true);
+    } catch (err) {
+      console.error("[contact] submit error:", err);
+      setErrors({ submit: t("err_send") || "Could not send. Please try again." });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <section className="contact" id="contact">
+      <div className="container">
+        <div className="contact-head">
+          <h2>{t("ct_h_a")}<span className="accent">{t("ct_h_b")}</span></h2>
+          <p>{t("ct_lead")}</p>
+        </div>
+
+        {sent ? (
+          <div style={{ border: "1px solid rgba(197,215,225,0.4)", padding: 60, textAlign: "center", background: "rgba(197,215,225,0.06)" }}>
+            <Eyebrow dark>{t("ct_thx_eyebrow")}</Eyebrow>
+            <h3 className="display-md" style={{ marginTop: 24, color: "white" }}>{t("ct_thx_h_pre")}{form.name.split(" ")[0]}.</h3>
+            <p style={{ color: "rgba(255,255,255,0.7)", maxWidth: "50ch", margin: "16px auto 0" }}>
+              {t("ct_thx_p_a")}{t("ct_thx_p_b")}
+            </p>
+          </div>
+        ) : (
+          <form className="contact-form" onSubmit={submit} noValidate>
+            <div className={`field ${errors.name ? "invalid" : ""}`} data-error={errors.name}>
+              <label>{t("ct_field_name")}</label>
+              <input value={form.name} onChange={set("name")} placeholder={t("ct_name_ph")} />
+            </div>
+            <div className="field">
+              <label>{t("ct_field_org")}</label>
+              <input value={form.org} onChange={set("org")} placeholder={t("ct_org_ph")} />
+            </div>
+            <div className="field">
+              <label>{t("ct_field_role")}</label>
+              <select value={form.role} onChange={set("role")}>
+                <option value="">—</option>
+                <option>{t("ct_role_landowner")}</option>
+                <option>{t("ct_role_investor")}</option>
+                <option>{t("ct_role_institution")}</option>
+                <option>{t("ct_role_other")}</option>
+              </select>
+            </div>
+            <div className={`field full ${errors.message ? "invalid" : ""}`} data-error={errors.message}>
+              <label>{t("ct_field_msg")}</label>
+              <textarea rows="3" value={form.message} onChange={set("message")} placeholder={t("ct_msg_ph")} />
+            </div>
+            <div className="form-foot" style={{ gridColumn: "1 / -1" }}>
+              <span className="agree">{t("ct_agree")}</span>
+              <button className="btn" type="submit" disabled={sending} style={{ background: "var(--powder)", color: "var(--ink)", borderColor: "var(--powder)", opacity: sending ? 0.6 : 1, cursor: sending ? "wait" : "pointer" }}>
+                {sending ? "…" : t("ct_send")} <span className="arr">→</span>
+              </button>
+            </div>
+            {errors.submit && (
+              <div style={{ gridColumn: "1 / -1", color: "#ff6b6b", fontFamily: "var(--mono)", fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase" }}>{errors.submit}</div>
+            )}
+          </form>
+        )}
+
+        <div className="contact-info">
+          <div className="ci-item"><div className="label">{t("ct_office")}</div><div className="val">{t("ct_office_v").split("\n").map((l, i) => <div key={i}>{l}</div>)}</div></div>
+          <div className="ci-item"><div className="label">{t("ct_segments")}</div><div className="val">{t("ct_segments_v").split("\n").map((l, i) => <div key={i}>{l}</div>)}</div></div>
+          <div className="ci-item"><div className="label">{t("ct_coverage")}</div><div className="val">{t("ct_coverage_v").split("\n").map((l, i) => <div key={i}>{l}</div>)}</div></div>
+          <div className="ci-item"><div className="label">{t("ct_response")}</div><div className="val">{t("ct_response_v").split("\n").map((l, i) => <div key={i}>{l}</div>)}</div></div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Footer = () => {
+  const { t } = useT();
+  return (
+    <footer className="footer">
+      <div className="footer-grid">
+        <div>
+          <NLLogo light />
+          <p style={{ marginTop: 24, fontSize: 14, color: "rgba(255,255,255,0.6)", maxWidth: "40ch", lineHeight: 1.5 }}>{t("ft_about")}</p>
+        </div>
+        <div>
+          <h5>{t("ft_h_platform")}</h5>
+          <ul>
+            <li>{t("nav_about")}</li>
+            <li>{t("nav_expertise")}</li>
+            <li>{t("nav_portfolio")}</li>
+            <li>{t("nav_markets")}</li>
+            <li>{t("nav_sustainability")}</li>
+          </ul>
+        </div>
+        <div>
+          <h5>{t("ft_h_partner")}</h5>
+          <ul>
+            <li>{t("ft_link_landowners")}</li>
+            <li>{t("ft_link_investors")}</li>
+            <li>{t("ft_link_institutions")}</li>
+            <li>{t("ft_link_lfu")}</li>
+          </ul>
+        </div>
+        <div>
+          <h5>{t("ft_h_contact")}</h5>
+          <ul>
+            <li>Uganda</li>
+            <li>Kampala</li>
+          </ul>
+        </div>
+      </div>
+      <div className="footer-bottom">
+        <span>{t("ft_copy")}</span>
+        <span className="meta"><span>Privacy</span><span>Terms</span></span>
+      </div>
+    </footer>
+  );
+};
+
+Object.assign(window, { Hero, Stats, About, Expertise, LandForUnits, Portfolio, Markets, Sustainability, Contact, Footer, Nav, Eyebrow });
+
+// app.jsx
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#C5D7E1",
+  "ink": "#000000",
+  "marquee": true,
+  "heroTreatment": "tower",
+  "lang": "en"
+}/*EDITMODE-END*/;
+
+const useReveal = () => {
+  React.useEffect(() => {
+    const els = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); });
+    }, { threshold: 0.12 });
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+};
+
+const App = () => {
+  useReveal();
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [lang, setLang] = React.useState(tweaks.lang || "en");
+
+  React.useEffect(() => {
+    document.documentElement.style.setProperty("--powder", tweaks.accent);
+    document.documentElement.style.setProperty("--ink", tweaks.ink);
+  }, [tweaks.accent, tweaks.ink]);
+
+  React.useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  const t = React.useCallback((k) => {
+    if (STRINGS[lang] && k in STRINGS[lang]) return STRINGS[lang][k];
+    if (k in STRINGS.en) return STRINGS.en[k];
+    return k;
+  }, [lang]);
+
+  return (
+    <I18nContext.Provider value={{ t, lang, setLang: (l) => { setLang(l); setTweak("lang", l); } }}>
+      <Nav />
+      <Hero />
+      <Stats />
+      <div className="reveal"><About /></div>
+      <div className="reveal"><Expertise /></div>
+      <div className="reveal"><LandForUnits /></div>
+      <div className="reveal"><Portfolio /></div>
+      <div className="reveal"><Markets /></div>
+      <div className="reveal"><Sustainability /></div>
+      <div className="reveal"><Contact /></div>
+      <Footer />
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection title="Language">
+          <TweakRadio label="Site language" value={lang} onChange={(v) => { setLang(v); setTweak("lang", v); }}
+            options={[{ label: "English", value: "en" }, { label: "Kiswahili", value: "sw" }]} />
+        </TweakSection>
+        <TweakSection title="Brand">
+          <TweakColor label="Accent (powder)" value={tweaks.accent} onChange={(v) => setTweak("accent", v)} />
+          <TweakColor label="Ink" value={tweaks.ink} onChange={(v) => setTweak("ink", v)} />
+        </TweakSection>
+        <TweakSection title="Hero">
+          <TweakRadio label="Hero treatment" value={tweaks.heroTreatment}
+            onChange={(v) => {
+              setTweak("heroTreatment", v);
+              const tw = document.querySelector(".hero-tower");
+              const g = document.querySelector(".hero-grid");
+              if (!tw || !g) return;
+              tw.style.display = v === "minimal" ? "none" : "block";
+              g.style.opacity = v === "grid" ? "1" : v === "minimal" ? "0" : "0.6";
+            }}
+            options={[{ label: "Tower", value: "tower" }, { label: "Grid", value: "grid" }, { label: "Minimal", value: "minimal" }]} />
+          <TweakToggle label="Marquee strip" value={tweaks.marquee}
+            onChange={(v) => {
+              setTweak("marquee", v);
+              const m = document.querySelector(".hero-marquee");
+              if (m) m.style.display = v ? "flex" : "none";
+            }} />
+        </TweakSection>
+      </TweaksPanel>
+    </I18nContext.Provider>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
