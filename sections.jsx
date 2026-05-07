@@ -432,15 +432,39 @@ const Contact = () => {
   const [form, setForm] = React.useState({ name: "", org: "", role: "", message: "" });
   const [errors, setErrors] = React.useState({});
   const [sent, setSent] = React.useState(false);
+  const [sending, setSending] = React.useState(false);
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     const next = {};
     if (!form.name.trim()) next.name = t("err_required");
     if (!form.message.trim() || form.message.trim().length < 10) next.message = t("err_msg");
     setErrors(next);
-    if (Object.keys(next).length === 0) setSent(true);
+    if (Object.keys(next).length > 0) return;
+
+    setSending(true);
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/ddogoev@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          organization: form.org,
+          role: form.role,
+          message: form.message,
+          _subject: `New enquiry from ${form.name} — NEO Living`,
+          _template: "table",
+          _captcha: "false"
+        })
+      });
+      if (!res.ok) throw new Error("send failed");
+      setSent(true);
+    } catch (err) {
+      setErrors({ submit: t("err_send") || "Could not send. Please try again." });
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -485,10 +509,13 @@ const Contact = () => {
             </div>
             <div className="form-foot" style={{ gridColumn: "1 / -1" }}>
               <span className="agree">{t("ct_agree")}</span>
-              <button className="btn" type="submit" style={{ background: "var(--powder)", color: "var(--ink)", borderColor: "var(--powder)" }}>
-                {t("ct_send")} <span className="arr">→</span>
+              <button className="btn" type="submit" disabled={sending} style={{ background: "var(--powder)", color: "var(--ink)", borderColor: "var(--powder)", opacity: sending ? 0.6 : 1, cursor: sending ? "wait" : "pointer" }}>
+                {sending ? "…" : t("ct_send")} <span className="arr">→</span>
               </button>
             </div>
+            {errors.submit && (
+              <div style={{ gridColumn: "1 / -1", color: "#ff6b6b", fontFamily: "var(--mono)", fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase" }}>{errors.submit}</div>
+            )}
           </form>
         )}
 
