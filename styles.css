@@ -854,7 +854,16 @@ section { position: relative; }
 .pf-img {
   position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--bone);
 }
-.pf-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.pf-img img { width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 1; opacity: 0; transition: opacity .5s ease, transform .6s ease; }
+.pf-img.is-loaded img { opacity: 1; }
+.pf-img::before {
+  content: ""; position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(100deg, #ecebe4 25%, #f6f4ee 50%, #ecebe4 75%);
+  background-size: 200% 100%; animation: skel-shimmer 1.4s ease-in-out infinite;
+}
+.pf-img.is-loaded::before { animation: none; opacity: 0; transition: opacity .35s ease; }
+.pf-flag, .pf-cls { z-index: 2; }
+@keyframes skel-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 .pf-card:hover .pf-img img { transform: scale(1.04); }
 .pf-flag {
   position: absolute; top: 12px; left: 12px;

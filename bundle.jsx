@@ -697,6 +697,36 @@ const LandForUnits = () => {
   );
 };
 
+const PfCard = ({ p, i }) => {
+  const { t } = useT();
+  const [loaded, setLoaded] = React.useState(false);
+  const imgRef = React.useRef(null);
+  React.useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) setLoaded(true);
+  }, []);
+  return (
+    <article className="pf-card">
+      <div className={`pf-img${loaded ? " is-loaded" : ""}`}>
+        <img ref={imgRef} src={p.img} alt={p.name} loading="lazy" decoding="async"
+          onLoad={() => setLoaded(true)} onError={() => setLoaded(true)} />
+        {p.flag && <span className="pf-flag">{t("pf_flagship")}</span>}
+        <span className="pf-cls" data-cls={p.cls}>{p.cls === "Premium" ? t("pf_class_p") : t("pf_class_c")}</span>
+      </div>
+      <div className="pf-body">
+        <div className="pf-head">
+          <span className="pf-num">№ {String(i + 1).padStart(2, "0")}</span>
+          <h3>{p.name}</h3>
+        </div>
+        <div className="pf-stats">
+          <div><span className="lab">m²</span><strong>{fmt(p.area)}</strong></div>
+          <div><span className="lab">{t("pf_col_units")}</span><strong>{fmt(p.units)}</strong></div>
+          <div><span className="lab">{t("pf_col_floors")}</span><strong>{p.floors}</strong></div>
+        </div>
+      </div>
+    </article>
+  );
+};
+
 const Portfolio = () => {
   const { t } = useT();
   const [filter, setFilter] = React.useState("all");
@@ -729,24 +759,7 @@ const Portfolio = () => {
 
         <div className="pf-grid">
           {list.map((p, i) => (
-            <article className="pf-card" key={p.slug}>
-              <div className="pf-img">
-                <img src={p.img} alt={p.name} loading="lazy" decoding="async" />
-                {p.flag && <span className="pf-flag">{t("pf_flagship")}</span>}
-                <span className="pf-cls" data-cls={p.cls}>{p.cls === "Premium" ? t("pf_class_p") : t("pf_class_c")}</span>
-              </div>
-              <div className="pf-body">
-                <div className="pf-head">
-                  <span className="pf-num">№ {String(i + 1).padStart(2, "0")}</span>
-                  <h3>{p.name}</h3>
-                </div>
-                <div className="pf-stats">
-                  <div><span className="lab">m²</span><strong>{fmt(p.area)}</strong></div>
-                  <div><span className="lab">{t("pf_col_units")}</span><strong>{fmt(p.units)}</strong></div>
-                  <div><span className="lab">{t("pf_col_floors")}</span><strong>{p.floors}</strong></div>
-                </div>
-              </div>
-            </article>
+            <PfCard key={p.slug} p={p} i={i} />
           ))}
           {filter === "all" && (
             <article className="pf-card pf-pipeline">

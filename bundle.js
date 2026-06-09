@@ -1049,13 +1049,63 @@ var LandForUnits = function LandForUnits() {
     className: "ntag"
   }, t("flow_return")), /*#__PURE__*/React.createElement("strong", null, cur.out)))))));
 };
-var Portfolio = function Portfolio() {
+var PfCard = function PfCard(_ref4) {
+  var p = _ref4.p,
+    i = _ref4.i;
   var _useT7 = useT(),
     t = _useT7.t;
-  var _React$useState5 = React.useState("all"),
+  var _React$useState5 = React.useState(false),
     _React$useState6 = _slicedToArray(_React$useState5, 2),
-    filter = _React$useState6[0],
-    setFilter = _React$useState6[1];
+    loaded = _React$useState6[0],
+    setLoaded = _React$useState6[1];
+  var imgRef = React.useRef(null);
+  React.useEffect(function () {
+    if (imgRef.current && imgRef.current.complete) setLoaded(true);
+  }, []);
+  return /*#__PURE__*/React.createElement("article", {
+    className: "pf-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "pf-img".concat(loaded ? " is-loaded" : "")
+  }, /*#__PURE__*/React.createElement("img", {
+    ref: imgRef,
+    src: p.img,
+    alt: p.name,
+    loading: "lazy",
+    decoding: "async",
+    onLoad: function onLoad() {
+      return setLoaded(true);
+    },
+    onError: function onError() {
+      return setLoaded(true);
+    }
+  }), p.flag && /*#__PURE__*/React.createElement("span", {
+    className: "pf-flag"
+  }, t("pf_flagship")), /*#__PURE__*/React.createElement("span", {
+    className: "pf-cls",
+    "data-cls": p.cls
+  }, p.cls === "Premium" ? t("pf_class_p") : t("pf_class_c"))), /*#__PURE__*/React.createElement("div", {
+    className: "pf-body"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "pf-head"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "pf-num"
+  }, "\u2116 ", String(i + 1).padStart(2, "0")), /*#__PURE__*/React.createElement("h3", null, p.name)), /*#__PURE__*/React.createElement("div", {
+    className: "pf-stats"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "lab"
+  }, "m\xB2"), /*#__PURE__*/React.createElement("strong", null, fmt(p.area))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "lab"
+  }, t("pf_col_units")), /*#__PURE__*/React.createElement("strong", null, fmt(p.units))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "lab"
+  }, t("pf_col_floors")), /*#__PURE__*/React.createElement("strong", null, p.floors)))));
+};
+var Portfolio = function Portfolio() {
+  var _useT8 = useT(),
+    t = _useT8.t;
+  var _React$useState7 = React.useState("all"),
+    _React$useState8 = _slicedToArray(_React$useState7, 2),
+    filter = _React$useState8[0],
+    setFilter = _React$useState8[1];
   var list = filter === "all" ? PROJECTS : PROJECTS.filter(function (p) {
     return p.cls.toLowerCase() === filter;
   });
@@ -1118,36 +1168,11 @@ var Portfolio = function Portfolio() {
   }, "Units"), " ", /*#__PURE__*/React.createElement("strong", null, fmt(filtered.units))))), /*#__PURE__*/React.createElement("div", {
     className: "pf-grid"
   }, list.map(function (p, i) {
-    return /*#__PURE__*/React.createElement("article", {
-      className: "pf-card",
-      key: p.slug
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "pf-img"
-    }, /*#__PURE__*/React.createElement("img", {
-      src: p.img,
-      alt: p.name,
-      loading: "lazy",
-      decoding: "async"
-    }), p.flag && /*#__PURE__*/React.createElement("span", {
-      className: "pf-flag"
-    }, t("pf_flagship")), /*#__PURE__*/React.createElement("span", {
-      className: "pf-cls",
-      "data-cls": p.cls
-    }, p.cls === "Premium" ? t("pf_class_p") : t("pf_class_c"))), /*#__PURE__*/React.createElement("div", {
-      className: "pf-body"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "pf-head"
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "pf-num"
-    }, "\u2116 ", String(i + 1).padStart(2, "0")), /*#__PURE__*/React.createElement("h3", null, p.name)), /*#__PURE__*/React.createElement("div", {
-      className: "pf-stats"
-    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
-      className: "lab"
-    }, "m\xB2"), /*#__PURE__*/React.createElement("strong", null, fmt(p.area))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
-      className: "lab"
-    }, t("pf_col_units")), /*#__PURE__*/React.createElement("strong", null, fmt(p.units))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
-      className: "lab"
-    }, t("pf_col_floors")), /*#__PURE__*/React.createElement("strong", null, p.floors)))));
+    return /*#__PURE__*/React.createElement(PfCard, {
+      key: p.slug,
+      p: p,
+      i: i
+    });
   }), filter === "all" && /*#__PURE__*/React.createElement("article", {
     className: "pf-card pf-pipeline"
   }, /*#__PURE__*/React.createElement("div", {
@@ -1175,8 +1200,8 @@ var Portfolio = function Portfolio() {
   })))))));
 };
 var Markets = function Markets() {
-  var _useT8 = useT(),
-    t = _useT8.t;
+  var _useT9 = useT(),
+    t = _useT9.t;
   return /*#__PURE__*/React.createElement("section", {
     className: "markets",
     id: "markets"
@@ -1214,12 +1239,12 @@ var Markets = function Markets() {
   }))));
 };
 var Sustainability = function Sustainability() {
-  var _useT9 = useT(),
-    t = _useT9.t;
-  var _React$useState7 = React.useState(0),
-    _React$useState8 = _slicedToArray(_React$useState7, 2),
-    active = _React$useState8[0],
-    setActive = _React$useState8[1];
+  var _useT0 = useT(),
+    t = _useT0.t;
+  var _React$useState9 = React.useState(0),
+    _React$useState0 = _slicedToArray(_React$useState9, 2),
+    active = _React$useState0[0],
+    setActive = _React$useState0[1];
   var pillars = [{
     code: "S1",
     tag: t("sus_s1_tag"),
@@ -1352,29 +1377,29 @@ var Sustainability = function Sustainability() {
   }))))));
 };
 var Contact = function Contact() {
-  var _useT0 = useT(),
-    t = _useT0.t;
-  var _React$useState9 = React.useState({
+  var _useT1 = useT(),
+    t = _useT1.t;
+  var _React$useState1 = React.useState({
       name: "",
       org: "",
       role: "",
       message: ""
     }),
-    _React$useState0 = _slicedToArray(_React$useState9, 2),
-    form = _React$useState0[0],
-    setForm = _React$useState0[1];
-  var _React$useState1 = React.useState({}),
     _React$useState10 = _slicedToArray(_React$useState1, 2),
-    errors = _React$useState10[0],
-    setErrors = _React$useState10[1];
-  var _React$useState11 = React.useState(false),
+    form = _React$useState10[0],
+    setForm = _React$useState10[1];
+  var _React$useState11 = React.useState({}),
     _React$useState12 = _slicedToArray(_React$useState11, 2),
-    sent = _React$useState12[0],
-    setSent = _React$useState12[1];
+    errors = _React$useState12[0],
+    setErrors = _React$useState12[1];
   var _React$useState13 = React.useState(false),
     _React$useState14 = _slicedToArray(_React$useState13, 2),
-    sending = _React$useState14[0],
-    setSending = _React$useState14[1];
+    sent = _React$useState14[0],
+    setSent = _React$useState14[1];
+  var _React$useState15 = React.useState(false),
+    _React$useState16 = _slicedToArray(_React$useState15, 2),
+    sending = _React$useState16[0],
+    setSending = _React$useState16[1];
   var set = function set(k) {
     return function (e) {
       return setForm(function (f) {
@@ -1383,7 +1408,7 @@ var Contact = function Contact() {
     };
   };
   var submit = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(e) {
+    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(e) {
       var next, res, data, _t;
       return _regenerator().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
@@ -1453,7 +1478,7 @@ var Contact = function Contact() {
       }, _callee, null, [[2, 6, 7, 8]]);
     }));
     return function submit(_x) {
-      return _ref4.apply(this, arguments);
+      return _ref5.apply(this, arguments);
     };
   }();
   return /*#__PURE__*/React.createElement("section", {
@@ -1592,8 +1617,8 @@ var Contact = function Contact() {
   }))))));
 };
 var Footer = function Footer() {
-  var _useT1 = useT(),
-    t = _useT1.t;
+  var _useT10 = useT(),
+    t = _useT10.t;
   return /*#__PURE__*/React.createElement("footer", {
     className: "footer"
   }, /*#__PURE__*/React.createElement("div", {
@@ -1650,10 +1675,10 @@ var useReveal = function useReveal() {
 };
 var App = function App() {
   useReveal();
-  var _React$useState15 = React.useState("en"),
-    _React$useState16 = _slicedToArray(_React$useState15, 2),
-    lang = _React$useState16[0],
-    setLang = _React$useState16[1];
+  var _React$useState17 = React.useState("en"),
+    _React$useState18 = _slicedToArray(_React$useState17, 2),
+    lang = _React$useState18[0],
+    setLang = _React$useState18[1];
   React.useEffect(function () {
     document.documentElement.lang = lang;
   }, [lang]);
