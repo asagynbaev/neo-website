@@ -145,7 +145,7 @@ const About = () => {
           </div>
           <div>
             <div style={{ position: "relative", aspectRatio: "3 / 4", overflow: "hidden", background: "var(--bone)" }}>
-              <img src="assets/amanat.jpeg" alt="Amanat Residence" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="assets/amanat.jpeg" alt="Amanat Residence" loading="lazy" decoding="async" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               <span style={{ position: "absolute", left: 16, bottom: 16, fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.95)", background: "rgba(0,0,0,0.5)", padding: "6px 10px", backdropFilter: "blur(4px)" }}>Amanat Residence · Flagship</span>
             </div>
           </div>
@@ -289,7 +289,7 @@ const Portfolio = () => {
           {list.map((p, i) => (
             <article className="pf-card" key={p.slug}>
               <div className="pf-img">
-                <img src={p.img} alt={p.name} />
+                <img src={p.img} alt={p.name} loading="lazy" decoding="async" />
                 {p.flag && <span className="pf-flag">{t("pf_flagship")}</span>}
                 <span className="pf-cls" data-cls={p.cls}>{p.cls === "Premium" ? t("pf_class_p") : t("pf_class_c")}</span>
               </div>

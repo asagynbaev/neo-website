@@ -1,428 +1,29 @@
 "use strict";
 
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-// tweaks-panel.jsx
-var __TWEAKS_STYLE = "\n  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;\n    max-height:calc(100vh - 32px);display:flex;flex-direction:column;\n    background:rgba(250,249,247,.78);color:#29261b;\n    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);\n    border:.5px solid rgba(255,255,255,.6);border-radius:14px;\n    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);\n    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}\n  .twk-hd{display:flex;align-items:center;justify-content:space-between;\n    padding:10px 8px 10px 14px;cursor:move;user-select:none}\n  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}\n  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);\n    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}\n  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}\n  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;\n    overflow-y:auto;overflow-x:hidden;min-height:0;\n    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}\n  .twk-body::-webkit-scrollbar{width:8px}\n  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}\n  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;\n    border:2px solid transparent;background-clip:content-box}\n  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);\n    border:2px solid transparent;background-clip:content-box}\n  .twk-row{display:flex;flex-direction:column;gap:5px}\n  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}\n  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;\n    color:rgba(41,38,27,.72)}\n  .twk-lbl>span:first-child{font-weight:500}\n  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}\n  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;\n    color:rgba(41,38,27,.45);padding:10px 0 0}\n  .twk-sect:first-child{padding-top:0}\n  .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;\n    border:.5px solid rgba(0,0,0,.1);border-radius:7px;\n    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}\n  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}\n  select.twk-field{padding-right:22px;\n    background-image:url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>\");\n    background-repeat:no-repeat;background-position:right 8px center}\n  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;\n    border-radius:999px;background:rgba(0,0,0,.12);outline:none}\n  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;\n    width:14px;height:14px;border-radius:50%;background:#fff;\n    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}\n  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;\n    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}\n  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;\n    background:rgba(0,0,0,.06);user-select:none}\n  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;\n    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);\n    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}\n  .twk-seg.dragging .twk-seg-thumb{transition:none}\n  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;\n    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;\n    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;\n    overflow-wrap:anywhere}\n  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;\n    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}\n  .twk-toggle[data-on=\"1\"]{background:#34c759}\n  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;\n    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}\n  .twk-toggle[data-on=\"1\"] i{transform:translateX(14px)}\n  .twk-num{display:flex;align-items:center;height:26px;padding:0 0 0 8px;\n    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}\n  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;\n    user-select:none;padding-right:8px}\n  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;\n    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;\n    outline:none;color:inherit;-moz-appearance:textfield}\n  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{\n    -webkit-appearance:none;margin:0}\n  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}\n  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;\n    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}\n  .twk-btn:hover{background:rgba(0,0,0,.88)}\n  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}\n  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}\n  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;\n    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;\n    background:transparent;flex-shrink:0}\n  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}\n  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}\n  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}\n";
-function useTweaks(defaults) {
-  var _React$useState = React.useState(defaults),
-    _React$useState2 = _slicedToArray(_React$useState, 2),
-    values = _React$useState2[0],
-    setValues = _React$useState2[1];
-  var setTweak = React.useCallback(function (keyOrEdits, val) {
-    var edits = _typeof(keyOrEdits) === 'object' && keyOrEdits !== null ? keyOrEdits : _defineProperty({}, keyOrEdits, val);
-    setValues(function (prev) {
-      return _objectSpread(_objectSpread({}, prev), edits);
-    });
-    window.parent.postMessage({
-      type: '__edit_mode_set_keys',
-      edits: edits
-    }, '*');
-  }, []);
-  return [values, setTweak];
-}
-function TweaksPanel(_ref2) {
-  var _ref2$title = _ref2.title,
-    title = _ref2$title === void 0 ? 'Tweaks' : _ref2$title,
-    children = _ref2.children;
-  var _React$useState3 = React.useState(false),
-    _React$useState4 = _slicedToArray(_React$useState3, 2),
-    open = _React$useState4[0],
-    setOpen = _React$useState4[1];
-  var dragRef = React.useRef(null);
-  var offsetRef = React.useRef({
-    x: 16,
-    y: 16
-  });
-  var PAD = 16;
-  var clampToViewport = React.useCallback(function () {
-    var panel = dragRef.current;
-    if (!panel) return;
-    var w = panel.offsetWidth,
-      h = panel.offsetHeight;
-    var maxRight = Math.max(PAD, window.innerWidth - w - PAD);
-    var maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
-    offsetRef.current = {
-      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
-      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y))
-    };
-    panel.style.right = offsetRef.current.x + 'px';
-    panel.style.bottom = offsetRef.current.y + 'px';
-  }, []);
-  React.useEffect(function () {
-    if (!open) return;
-    clampToViewport();
-    if (typeof ResizeObserver === 'undefined') {
-      window.addEventListener('resize', clampToViewport);
-      return function () {
-        return window.removeEventListener('resize', clampToViewport);
-      };
-    }
-    var ro = new ResizeObserver(clampToViewport);
-    ro.observe(document.documentElement);
-    return function () {
-      return ro.disconnect();
-    };
-  }, [open, clampToViewport]);
-  React.useEffect(function () {
-    var onMsg = function onMsg(e) {
-      var _e$data;
-      var t = e === null || e === void 0 || (_e$data = e.data) === null || _e$data === void 0 ? void 0 : _e$data.type;
-      if (t === '__activate_edit_mode') setOpen(true);else if (t === '__deactivate_edit_mode') setOpen(false);
-    };
-    window.addEventListener('message', onMsg);
-    window.parent.postMessage({
-      type: '__edit_mode_available'
-    }, '*');
-    return function () {
-      return window.removeEventListener('message', onMsg);
-    };
-  }, []);
-  var dismiss = function dismiss() {
-    setOpen(false);
-    window.parent.postMessage({
-      type: '__edit_mode_dismissed'
-    }, '*');
-  };
-  var onDragStart = function onDragStart(e) {
-    var panel = dragRef.current;
-    if (!panel) return;
-    var r = panel.getBoundingClientRect();
-    var sx = e.clientX,
-      sy = e.clientY;
-    var startRight = window.innerWidth - r.right;
-    var startBottom = window.innerHeight - r.bottom;
-    var move = function move(ev) {
-      offsetRef.current = {
-        x: startRight - (ev.clientX - sx),
-        y: startBottom - (ev.clientY - sy)
-      };
-      clampToViewport();
-    };
-    var _up = function up() {
-      window.removeEventListener('mousemove', move);
-      window.removeEventListener('mouseup', _up);
-    };
-    window.addEventListener('mousemove', move);
-    window.addEventListener('mouseup', _up);
-  };
-  if (!open) return null;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("style", null, __TWEAKS_STYLE), /*#__PURE__*/React.createElement("div", {
-    ref: dragRef,
-    className: "twk-panel",
-    style: {
-      right: offsetRef.current.x,
-      bottom: offsetRef.current.y
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "twk-hd",
-    onMouseDown: onDragStart
-  }, /*#__PURE__*/React.createElement("b", null, title), /*#__PURE__*/React.createElement("button", {
-    className: "twk-x",
-    "aria-label": "Close tweaks",
-    onMouseDown: function onMouseDown(e) {
-      return e.stopPropagation();
-    },
-    onClick: dismiss
-  }, "\u2715")), /*#__PURE__*/React.createElement("div", {
-    className: "twk-body"
-  }, children)));
-}
-function TweakSection(_ref3) {
-  var label = _ref3.label,
-    children = _ref3.children;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "twk-sect"
-  }, label), children);
-}
-function TweakRow(_ref4) {
-  var label = _ref4.label,
-    value = _ref4.value,
-    children = _ref4.children,
-    _ref4$inline = _ref4.inline,
-    inline = _ref4$inline === void 0 ? false : _ref4$inline;
-  return /*#__PURE__*/React.createElement("div", {
-    className: inline ? 'twk-row twk-row-h' : 'twk-row'
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "twk-lbl"
-  }, /*#__PURE__*/React.createElement("span", null, label), value != null && /*#__PURE__*/React.createElement("span", {
-    className: "twk-val"
-  }, value)), children);
-}
-function TweakSlider(_ref5) {
-  var label = _ref5.label,
-    value = _ref5.value,
-    _ref5$min = _ref5.min,
-    min = _ref5$min === void 0 ? 0 : _ref5$min,
-    _ref5$max = _ref5.max,
-    max = _ref5$max === void 0 ? 100 : _ref5$max,
-    _ref5$step = _ref5.step,
-    step = _ref5$step === void 0 ? 1 : _ref5$step,
-    _ref5$unit = _ref5.unit,
-    unit = _ref5$unit === void 0 ? '' : _ref5$unit,
-    _onChange = _ref5.onChange;
-  return /*#__PURE__*/React.createElement(TweakRow, {
-    label: label,
-    value: "".concat(value).concat(unit)
-  }, /*#__PURE__*/React.createElement("input", {
-    type: "range",
-    className: "twk-slider",
-    min: min,
-    max: max,
-    step: step,
-    value: value,
-    onChange: function onChange(e) {
-      return _onChange(Number(e.target.value));
-    }
-  }));
-}
-function TweakToggle(_ref6) {
-  var label = _ref6.label,
-    value = _ref6.value,
-    onChange = _ref6.onChange;
-  return /*#__PURE__*/React.createElement("div", {
-    className: "twk-row twk-row-h"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "twk-lbl"
-  }, /*#__PURE__*/React.createElement("span", null, label)), /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "twk-toggle",
-    "data-on": value ? '1' : '0',
-    role: "switch",
-    "aria-checked": !!value,
-    onClick: function onClick() {
-      return onChange(!value);
-    }
-  }, /*#__PURE__*/React.createElement("i", null)));
-}
-function TweakRadio(_ref7) {
-  var label = _ref7.label,
-    value = _ref7.value,
-    options = _ref7.options,
-    onChange = _ref7.onChange;
-  var trackRef = React.useRef(null);
-  var _React$useState5 = React.useState(false),
-    _React$useState6 = _slicedToArray(_React$useState5, 2),
-    dragging = _React$useState6[0],
-    setDragging = _React$useState6[1];
-  var opts = options.map(function (o) {
-    return _typeof(o) === 'object' ? o : {
-      value: o,
-      label: o
-    };
-  });
-  var idx = Math.max(0, opts.findIndex(function (o) {
-    return o.value === value;
-  }));
-  var n = opts.length;
-  var valueRef = React.useRef(value);
-  valueRef.current = value;
-  var segAt = function segAt(clientX) {
-    var r = trackRef.current.getBoundingClientRect();
-    var inner = r.width - 4;
-    var i = Math.floor((clientX - r.left - 2) / inner * n);
-    return opts[Math.max(0, Math.min(n - 1, i))].value;
-  };
-  var onPointerDown = function onPointerDown(e) {
-    setDragging(true);
-    var v0 = segAt(e.clientX);
-    if (v0 !== valueRef.current) onChange(v0);
-    var move = function move(ev) {
-      if (!trackRef.current) return;
-      var v = segAt(ev.clientX);
-      if (v !== valueRef.current) onChange(v);
-    };
-    var _up2 = function up() {
-      setDragging(false);
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerup', _up2);
-    };
-    window.addEventListener('pointermove', move);
-    window.addEventListener('pointerup', _up2);
-  };
-  return /*#__PURE__*/React.createElement(TweakRow, {
-    label: label
-  }, /*#__PURE__*/React.createElement("div", {
-    ref: trackRef,
-    role: "radiogroup",
-    onPointerDown: onPointerDown,
-    className: dragging ? 'twk-seg dragging' : 'twk-seg'
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "twk-seg-thumb",
-    style: {
-      left: "calc(2px + ".concat(idx, " * (100% - 4px) / ").concat(n, ")"),
-      width: "calc((100% - 4px) / ".concat(n, ")")
-    }
-  }), opts.map(function (o) {
-    return /*#__PURE__*/React.createElement("button", {
-      key: o.value,
-      type: "button",
-      role: "radio",
-      "aria-checked": o.value === value
-    }, o.label);
-  })));
-}
-function TweakSelect(_ref8) {
-  var label = _ref8.label,
-    value = _ref8.value,
-    options = _ref8.options,
-    _onChange2 = _ref8.onChange;
-  return /*#__PURE__*/React.createElement(TweakRow, {
-    label: label
-  }, /*#__PURE__*/React.createElement("select", {
-    className: "twk-field",
-    value: value,
-    onChange: function onChange(e) {
-      return _onChange2(e.target.value);
-    }
-  }, options.map(function (o) {
-    var v = _typeof(o) === 'object' ? o.value : o;
-    var l = _typeof(o) === 'object' ? o.label : o;
-    return /*#__PURE__*/React.createElement("option", {
-      key: v,
-      value: v
-    }, l);
-  })));
-}
-function TweakText(_ref9) {
-  var label = _ref9.label,
-    value = _ref9.value,
-    placeholder = _ref9.placeholder,
-    _onChange3 = _ref9.onChange;
-  return /*#__PURE__*/React.createElement(TweakRow, {
-    label: label
-  }, /*#__PURE__*/React.createElement("input", {
-    className: "twk-field",
-    type: "text",
-    value: value,
-    placeholder: placeholder,
-    onChange: function onChange(e) {
-      return _onChange3(e.target.value);
-    }
-  }));
-}
-function TweakNumber(_ref0) {
-  var label = _ref0.label,
-    value = _ref0.value,
-    min = _ref0.min,
-    max = _ref0.max,
-    _ref0$step = _ref0.step,
-    step = _ref0$step === void 0 ? 1 : _ref0$step,
-    _ref0$unit = _ref0.unit,
-    unit = _ref0$unit === void 0 ? '' : _ref0$unit,
-    _onChange4 = _ref0.onChange;
-  var clamp = function clamp(n) {
-    if (min != null && n < min) return min;
-    if (max != null && n > max) return max;
-    return n;
-  };
-  var startRef = React.useRef({
-    x: 0,
-    val: 0
-  });
-  var onScrubStart = function onScrubStart(e) {
-    e.preventDefault();
-    startRef.current = {
-      x: e.clientX,
-      val: value
-    };
-    var decimals = (String(step).split('.')[1] || '').length;
-    var move = function move(ev) {
-      var dx = ev.clientX - startRef.current.x;
-      var raw = startRef.current.val + dx * step;
-      var snapped = Math.round(raw / step) * step;
-      _onChange4(clamp(Number(snapped.toFixed(decimals))));
-    };
-    var _up3 = function up() {
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerup', _up3);
-    };
-    window.addEventListener('pointermove', move);
-    window.addEventListener('pointerup', _up3);
-  };
-  return /*#__PURE__*/React.createElement("div", {
-    className: "twk-num"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "twk-num-lbl",
-    onPointerDown: onScrubStart
-  }, label), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    value: value,
-    min: min,
-    max: max,
-    step: step,
-    onChange: function onChange(e) {
-      return _onChange4(clamp(Number(e.target.value)));
-    }
-  }), unit && /*#__PURE__*/React.createElement("span", {
-    className: "twk-num-unit"
-  }, unit));
-}
-function TweakColor(_ref1) {
-  var label = _ref1.label,
-    value = _ref1.value,
-    _onChange5 = _ref1.onChange;
-  return /*#__PURE__*/React.createElement("div", {
-    className: "twk-row twk-row-h"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "twk-lbl"
-  }, /*#__PURE__*/React.createElement("span", null, label)), /*#__PURE__*/React.createElement("input", {
-    type: "color",
-    className: "twk-swatch",
-    value: value,
-    onChange: function onChange(e) {
-      return _onChange5(e.target.value);
-    }
-  }));
-}
-function TweakButton(_ref10) {
-  var label = _ref10.label,
-    onClick = _ref10.onClick,
-    _ref10$secondary = _ref10.secondary,
-    secondary = _ref10$secondary === void 0 ? false : _ref10$secondary;
-  return /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: secondary ? 'twk-btn secondary' : 'twk-btn',
-    onClick: onClick
-  }, label);
-}
-Object.assign(window, {
-  useTweaks: useTweaks,
-  TweaksPanel: TweaksPanel,
-  TweakSection: TweakSection,
-  TweakRow: TweakRow,
-  TweakSlider: TweakSlider,
-  TweakToggle: TweakToggle,
-  TweakRadio: TweakRadio,
-  TweakSelect: TweakSelect,
-  TweakText: TweakText,
-  TweakNumber: TweakNumber,
-  TweakColor: TweakColor,
-  TweakButton: TweakButton
-});
-
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 // logo.jsx
-var NLLogo = function NLLogo(_ref11) {
-  var _ref11$light = _ref11.light,
-    light = _ref11$light === void 0 ? false : _ref11$light,
-    _ref11$compact = _ref11.compact,
-    compact = _ref11$compact === void 0 ? false : _ref11$compact,
-    _ref11$size = _ref11.size,
-    size = _ref11$size === void 0 ? 44 : _ref11$size;
+var NLLogo = function NLLogo(_ref) {
+  var _ref$light = _ref.light,
+    light = _ref$light === void 0 ? false : _ref$light,
+    _ref$compact = _ref.compact,
+    compact = _ref$compact === void 0 ? false : _ref$compact,
+    _ref$size = _ref.size,
+    size = _ref$size === void 0 ? 44 : _ref$size;
   var src = light ? "logo-light.png?v=2" : "logo-dark.png?v=2";
   var height = compact ? Math.round(size * 0.7) : size;
   return /*#__PURE__*/React.createElement("img", {
@@ -437,10 +38,10 @@ var NLLogo = function NLLogo(_ref11) {
     draggable: false
   });
 };
-var NLMark = function NLMark(_ref12) {
-  var _ref12$size = _ref12.size,
-    size = _ref12$size === void 0 ? 32 : _ref12$size,
-    color = _ref12.color;
+var NLMark = function NLMark(_ref2) {
+  var _ref2$size = _ref2.size,
+    size = _ref2$size === void 0 ? 32 : _ref2$size,
+    color = _ref2.color;
   return /*#__PURE__*/React.createElement("img", {
     src: color === "#ffffff" || color === "white" ? "logo-light.png" : "logo-dark.png",
     alt: "",
@@ -912,7 +513,7 @@ var PROJECTS = [{
   units: 182,
   floors: 15,
   cls: "Premium",
-  img: "assets/riverside.png"
+  img: "assets/riverside.jpeg"
 }, {
   slug: "rabat",
   name: "Rabat",
@@ -920,7 +521,7 @@ var PROJECTS = [{
   units: 168,
   floors: 16,
   cls: "Premium",
-  img: "assets/rabat.png"
+  img: "assets/rabat.jpeg"
 }, {
   slug: "vegas",
   name: "Vegas",
@@ -944,7 +545,7 @@ var PROJECTS = [{
   units: 143,
   floors: 15,
   cls: "Premium",
-  img: "assets/central-park.png"
+  img: "assets/central-park.jpeg"
 }, {
   slug: "kosmos",
   name: "Cosmos",
@@ -1019,9 +620,9 @@ window.fmt = fmt;
 window.GEO = GEO;
 
 // sections.jsx
-var Eyebrow = function Eyebrow(_ref13) {
-  var children = _ref13.children,
-    dark = _ref13.dark;
+var Eyebrow = function Eyebrow(_ref3) {
+  var children = _ref3.children,
+    dark = _ref3.dark;
   return /*#__PURE__*/React.createElement("span", {
     className: "eyebrow ".concat(dark ? "dark" : "")
   }, /*#__PURE__*/React.createElement("span", {
@@ -1033,10 +634,10 @@ var Nav = function Nav() {
     t = _useT.t,
     lang = _useT.lang,
     setLang = _useT.setLang;
-  var _React$useState7 = React.useState(false),
-    _React$useState8 = _slicedToArray(_React$useState7, 2),
-    scrolled = _React$useState8[0],
-    setScrolled = _React$useState8[1];
+  var _React$useState = React.useState(false),
+    _React$useState2 = _slicedToArray(_React$useState, 2),
+    scrolled = _React$useState2[0],
+    setScrolled = _React$useState2[1];
   React.useEffect(function () {
     var onScroll = function onScroll() {
       return setScrolled(window.scrollY > 60);
@@ -1253,6 +854,8 @@ var About = function About() {
   }, /*#__PURE__*/React.createElement("img", {
     src: "assets/amanat.jpeg",
     alt: "Amanat Residence",
+    loading: "lazy",
+    decoding: "async",
     style: {
       width: "100%",
       height: "100%",
@@ -1338,10 +941,10 @@ var Expertise = function Expertise() {
 var LandForUnits = function LandForUnits() {
   var _useT6 = useT(),
     t = _useT6.t;
-  var _React$useState9 = React.useState(0),
-    _React$useState0 = _slicedToArray(_React$useState9, 2),
-    tab = _React$useState0[0],
-    setTab = _React$useState0[1];
+  var _React$useState3 = React.useState(0),
+    _React$useState4 = _slicedToArray(_React$useState3, 2),
+    tab = _React$useState4[0],
+    setTab = _React$useState4[1];
   var tabs = [{
     step: t("lfu_1_step"),
     title: t("lfu_1_title"),
@@ -1449,10 +1052,10 @@ var LandForUnits = function LandForUnits() {
 var Portfolio = function Portfolio() {
   var _useT7 = useT(),
     t = _useT7.t;
-  var _React$useState1 = React.useState("all"),
-    _React$useState10 = _slicedToArray(_React$useState1, 2),
-    filter = _React$useState10[0],
-    setFilter = _React$useState10[1];
+  var _React$useState5 = React.useState("all"),
+    _React$useState6 = _slicedToArray(_React$useState5, 2),
+    filter = _React$useState6[0],
+    setFilter = _React$useState6[1];
   var list = filter === "all" ? PROJECTS : PROJECTS.filter(function (p) {
     return p.cls.toLowerCase() === filter;
   });
@@ -1522,7 +1125,9 @@ var Portfolio = function Portfolio() {
       className: "pf-img"
     }, /*#__PURE__*/React.createElement("img", {
       src: p.img,
-      alt: p.name
+      alt: p.name,
+      loading: "lazy",
+      decoding: "async"
     }), p.flag && /*#__PURE__*/React.createElement("span", {
       className: "pf-flag"
     }, t("pf_flagship")), /*#__PURE__*/React.createElement("span", {
@@ -1611,10 +1216,10 @@ var Markets = function Markets() {
 var Sustainability = function Sustainability() {
   var _useT9 = useT(),
     t = _useT9.t;
-  var _React$useState11 = React.useState(0),
-    _React$useState12 = _slicedToArray(_React$useState11, 2),
-    active = _React$useState12[0],
-    setActive = _React$useState12[1];
+  var _React$useState7 = React.useState(0),
+    _React$useState8 = _slicedToArray(_React$useState7, 2),
+    active = _React$useState8[0],
+    setActive = _React$useState8[1];
   var pillars = [{
     code: "S1",
     tag: t("sus_s1_tag"),
@@ -1749,27 +1354,27 @@ var Sustainability = function Sustainability() {
 var Contact = function Contact() {
   var _useT0 = useT(),
     t = _useT0.t;
-  var _React$useState13 = React.useState({
+  var _React$useState9 = React.useState({
       name: "",
       org: "",
       role: "",
       message: ""
     }),
+    _React$useState0 = _slicedToArray(_React$useState9, 2),
+    form = _React$useState0[0],
+    setForm = _React$useState0[1];
+  var _React$useState1 = React.useState({}),
+    _React$useState10 = _slicedToArray(_React$useState1, 2),
+    errors = _React$useState10[0],
+    setErrors = _React$useState10[1];
+  var _React$useState11 = React.useState(false),
+    _React$useState12 = _slicedToArray(_React$useState11, 2),
+    sent = _React$useState12[0],
+    setSent = _React$useState12[1];
+  var _React$useState13 = React.useState(false),
     _React$useState14 = _slicedToArray(_React$useState13, 2),
-    form = _React$useState14[0],
-    setForm = _React$useState14[1];
-  var _React$useState15 = React.useState({}),
-    _React$useState16 = _slicedToArray(_React$useState15, 2),
-    errors = _React$useState16[0],
-    setErrors = _React$useState16[1];
-  var _React$useState17 = React.useState(false),
-    _React$useState18 = _slicedToArray(_React$useState17, 2),
-    sent = _React$useState18[0],
-    setSent = _React$useState18[1];
-  var _React$useState19 = React.useState(false),
-    _React$useState20 = _slicedToArray(_React$useState19, 2),
-    sending = _React$useState20[0],
-    setSending = _React$useState20[1];
+    sending = _React$useState14[0],
+    setSending = _React$useState14[1];
   var set = function set(k) {
     return function (e) {
       return setForm(function (f) {
@@ -1778,7 +1383,7 @@ var Contact = function Contact() {
     };
   };
   var submit = /*#__PURE__*/function () {
-    var _ref14 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(e) {
+    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(e) {
       var next, res, data, _t;
       return _regenerator().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
@@ -1848,7 +1453,7 @@ var Contact = function Contact() {
       }, _callee, null, [[2, 6, 7, 8]]);
     }));
     return function submit(_x) {
-      return _ref14.apply(this, arguments);
+      return _ref4.apply(this, arguments);
     };
   }();
   return /*#__PURE__*/React.createElement("section", {
@@ -2025,13 +1630,6 @@ Object.assign(window, {
 });
 
 // app.jsx
-var TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "accent": "#C5D7E1",
-  "ink": "#000000",
-  "marquee": true,
-  "heroTreatment": "tower",
-  "lang": "en"
-} /*EDITMODE-END*/;
 var useReveal = function useReveal() {
   React.useEffect(function () {
     var els = document.querySelectorAll(".reveal");
@@ -2052,18 +1650,10 @@ var useReveal = function useReveal() {
 };
 var App = function App() {
   useReveal();
-  var _useTweaks = useTweaks(TWEAK_DEFAULTS),
-    _useTweaks2 = _slicedToArray(_useTweaks, 2),
-    tweaks = _useTweaks2[0],
-    setTweak = _useTweaks2[1];
-  var _React$useState21 = React.useState(tweaks.lang || "en"),
-    _React$useState22 = _slicedToArray(_React$useState21, 2),
-    lang = _React$useState22[0],
-    _setLang = _React$useState22[1];
-  React.useEffect(function () {
-    document.documentElement.style.setProperty("--powder", tweaks.accent);
-    document.documentElement.style.setProperty("--ink", tweaks.ink);
-  }, [tweaks.accent, tweaks.ink]);
+  var _React$useState15 = React.useState("en"),
+    _React$useState16 = _slicedToArray(_React$useState15, 2),
+    lang = _React$useState16[0],
+    setLang = _React$useState16[1];
   React.useEffect(function () {
     document.documentElement.lang = lang;
   }, [lang]);
@@ -2076,10 +1666,7 @@ var App = function App() {
     value: {
       t: t,
       lang: lang,
-      setLang: function setLang(l) {
-        _setLang(l);
-        setTweak("lang", l);
-      }
+      setLang: setLang
     }
   }, /*#__PURE__*/React.createElement(Nav, null), /*#__PURE__*/React.createElement(Hero, null), /*#__PURE__*/React.createElement(Stats, null), /*#__PURE__*/React.createElement("div", {
     className: "reveal"
@@ -2095,69 +1682,6 @@ var App = function App() {
     className: "reveal"
   }, /*#__PURE__*/React.createElement(Sustainability, null)), /*#__PURE__*/React.createElement("div", {
     className: "reveal"
-  }, /*#__PURE__*/React.createElement(Contact, null)), /*#__PURE__*/React.createElement(Footer, null), /*#__PURE__*/React.createElement(TweaksPanel, {
-    title: "Tweaks"
-  }, /*#__PURE__*/React.createElement(TweakSection, {
-    title: "Language"
-  }, /*#__PURE__*/React.createElement(TweakRadio, {
-    label: "Site language",
-    value: lang,
-    onChange: function onChange(v) {
-      _setLang(v);
-      setTweak("lang", v);
-    },
-    options: [{
-      label: "English",
-      value: "en"
-    }, {
-      label: "Kiswahili",
-      value: "sw"
-    }]
-  })), /*#__PURE__*/React.createElement(TweakSection, {
-    title: "Brand"
-  }, /*#__PURE__*/React.createElement(TweakColor, {
-    label: "Accent (powder)",
-    value: tweaks.accent,
-    onChange: function onChange(v) {
-      return setTweak("accent", v);
-    }
-  }), /*#__PURE__*/React.createElement(TweakColor, {
-    label: "Ink",
-    value: tweaks.ink,
-    onChange: function onChange(v) {
-      return setTweak("ink", v);
-    }
-  })), /*#__PURE__*/React.createElement(TweakSection, {
-    title: "Hero"
-  }, /*#__PURE__*/React.createElement(TweakRadio, {
-    label: "Hero treatment",
-    value: tweaks.heroTreatment,
-    onChange: function onChange(v) {
-      setTweak("heroTreatment", v);
-      var tw = document.querySelector(".hero-tower");
-      var g = document.querySelector(".hero-grid");
-      if (!tw || !g) return;
-      tw.style.display = v === "minimal" ? "none" : "block";
-      g.style.opacity = v === "grid" ? "1" : v === "minimal" ? "0" : "0.6";
-    },
-    options: [{
-      label: "Tower",
-      value: "tower"
-    }, {
-      label: "Grid",
-      value: "grid"
-    }, {
-      label: "Minimal",
-      value: "minimal"
-    }]
-  }), /*#__PURE__*/React.createElement(TweakToggle, {
-    label: "Marquee strip",
-    value: tweaks.marquee,
-    onChange: function onChange(v) {
-      setTweak("marquee", v);
-      var m = document.querySelector(".hero-marquee");
-      if (m) m.style.display = v ? "flex" : "none";
-    }
-  }))));
+  }, /*#__PURE__*/React.createElement(Contact, null)), /*#__PURE__*/React.createElement(Footer, null));
 };
 ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
